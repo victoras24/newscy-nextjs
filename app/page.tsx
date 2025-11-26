@@ -1,8 +1,23 @@
+"use client";
+import { useEffect, useState } from "react";
 import CurrentDate from "./components/CurrentDate";
 import NewsCard from "./components/NewsCard";
 import Weather from "./components/Weather";
 
 const News: React.FC = () => {
+	const [articles, setArticles] = useState([]);
+
+	useEffect(() => {
+		const loadNews = async () => {
+			const response = await fetch("/api/news");
+			const data = await response.json();
+			setArticles(data.results);
+		};
+
+		loadNews();
+		console.log(articles);
+	}, []);
+
 	return (
 		<>
 			<div className="flex justify-between">
