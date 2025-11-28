@@ -7,16 +7,16 @@ import Weather from "./components/Weather";
 const News: React.FC = () => {
 	const [articles, setArticles] = useState([]);
 
-	// useEffect(() => {
-	// 	const loadNews = async () => {
-	// 		const response = await fetch("/api/news");
-	// 		const data = await response.json();
-	// 		setArticles(data.results);
-	// 	};
+	useEffect(() => {
+		const loadNews = async () => {
+			const response = await fetch("/api/news");
+			const data = await response.json();
+			console.log(data.search_results);
+			setArticles(data.search_results);
+		};
 
-	// 	loadNews();
-	// 	console.log(articles);
-	// }, []);
+		loadNews();
+	}, []);
 
 	return (
 		<>

@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import Perplexity from "@perplexity-ai/perplexity_ai";
+import type { NextApiRequest, NextApiResponse } from "next";
+import supabaseClient from "@/app/lib/supabaseClient";
 
 export async function GET() {
 	const client = new Perplexity({
@@ -79,12 +81,57 @@ export async function GET() {
 			],
 		});
 
-		console.log(response);
-		return NextResponse.json(response);
+		const articles = response.search_results;
+		// return NextResponse.json(articles);
+		articles?.forEach(async (article) => {
+			const { title, url, date, last_updated, snippet, source } = article;
+			const { error, data } = await supabaseClient
+				.from("articles")
+				.insert({ title, url, date, last_updated, snippet, source })
+				.select();
+			if (error) {
+				console.error("Database error:", error);
+				return NextResponse.json(
+					{ error: "Failed to save articles to database" },
+					{ status: 500 }
+				);
+			}
+
+			console.log("Saved to DB:", data);
+
+			return NextResponse.json({
+				success: true,
+				articles: data,
+			});
+		});
 	} catch (error: any) {
 		return NextResponse.json(
 			{ error: error.message || "Unknown error" },
 			{ status: 500 }
 		);
 	}
+}
+
+export async function saveNews(
+	request: NextApiRequest,
+	response: NextApiResponse
+) {
+	if (request.method !== "POST")
+		return response.status(402).send("Method not allowed");
+
+	const { original_title, rewritten_title, summary, url, category, source } =
+		request.body;
+
+	const { error } = await supabaseClient.from("articles").insert({
+		original_title,
+		rewritten_title,
+		summary,
+		url,
+		category,
+		source,
+	});
+
+	if (error) return response.status(400).json({ error });
+
+	response.status(200).json({ success: true });
 }
