@@ -1,22 +1,30 @@
-"use client";
-import { useEffect, useState } from "react";
 import CurrentDate from "./components/CurrentDate";
-import NewsCard from "./components/NewsCard";
 import Weather from "./components/Weather";
+import supabaseClient from "./lib/supabaseClient";
+import NewsCard from "./components/NewsCard";
 
 const News: React.FC = () => {
-	const [articles, setArticles] = useState([]);
+	async function LoadNews() {
+		const { data } = await supabaseClient.from("articles").select("*");
 
-	useEffect(() => {
-		const loadNews = async () => {
-			const response = await fetch("/api/news");
-			const data = await response.json();
-			console.log(data.search_results);
-			setArticles(data.search_results);
-		};
-
-		loadNews();
-	}, []);
+		if (data) {
+			return (
+				<div>
+					{data.map((article, index) => {
+						return (
+							<NewsCard
+								key={index}
+								category={article.category}
+								title={article.title}
+								summary={article.snippet}
+								date={article.date}
+							/>
+						);
+					})}
+				</div>
+			);
+		}
+	}
 
 	return (
 		<>
@@ -29,11 +37,7 @@ const News: React.FC = () => {
 					<div>
 						<h2 className="p-4">News</h2>
 					</div>
-					<NewsCard />
-					<NewsCard />
-					<NewsCard />
-					<NewsCard />
-					<NewsCard />
+					{LoadNews()}
 				</div>
 				<div className="bg-white rounded-xl md:col-span-3">Something</div>
 				<div className="bg-white rounded-xl md:col-span-3">Something</div>

@@ -112,26 +112,11 @@ export async function GET() {
 	}
 }
 
-export async function saveNews(
-	request: NextApiRequest,
-	response: NextApiResponse
-) {
-	if (request.method !== "POST")
-		return response.status(402).send("Method not allowed");
-
-	const { original_title, rewritten_title, summary, url, category, source } =
-		request.body;
-
-	const { error } = await supabaseClient.from("articles").insert({
-		original_title,
-		rewritten_title,
-		summary,
-		url,
-		category,
-		source,
-	});
-
-	if (error) return response.status(400).json({ error });
-
-	response.status(200).json({ success: true });
+export async function getNewsDataFromDb() {
+	try {
+		const data = await supabaseClient.from("articles").select;
+		return NextResponse.json({ success: true, articles: data });
+	} catch (error) {
+		return NextResponse.json({ error: error }, { status: 500 });
+	}
 }

@@ -1,6 +1,18 @@
 import "../style/_newsCard.scss";
 
-const NewsCard: React.FC = () => {
+interface NewsCardProps {
+	category: string;
+	title: string;
+	summary: string;
+	date: string;
+}
+
+const NewsCard: React.FC<NewsCardProps> = ({
+	category,
+	title,
+	summary,
+	date,
+}) => {
 	return (
 		<div>
 			<hr className="h-px my-2 bg-gray-200 border-0 mx-4" />
@@ -13,11 +25,11 @@ const NewsCard: React.FC = () => {
 					/>
 				</div>
 				<div className="flex flex-col justify-items-end items-end md:pl-4 leading-normal ">
-					<h5>Category</h5>
+					<h5>{category}</h5>
 					<h5 className="mb-2 text-lg font-medium text-end hover:cursor-pointer hover:underline underline-offset-2">
-						Wall Street Journal Raises A Blistering Question About RFK Jr.
+						{title}
 					</h5>
-					<span className="text-sm">2 hour</span>
+					<span className="text-sm">{date}</span>
 				</div>
 			</div>
 		</div>
