@@ -6,6 +6,7 @@ interface NewsCardProps {
 	summary: string;
 	date: string;
 	url: string;
+	imageUrl: string;
 }
 
 const NewsCard: React.FC<NewsCardProps> = ({
@@ -14,7 +15,9 @@ const NewsCard: React.FC<NewsCardProps> = ({
 	summary,
 	date,
 	url,
+	imageUrl,
 }) => {
+	console.log(imageUrl);
 	return (
 		<div>
 			<hr className="h-px my-2 bg-gray-200 border-0 mx-4" />
@@ -22,7 +25,7 @@ const NewsCard: React.FC<NewsCardProps> = ({
 				<div className="">
 					<img
 						className="news-card__image object-cover w-full rounded-xl mr-4"
-						src="https://cyprus-mail.com/image/s640x515/fill/webp/path/wp-content/uploads/2025/11/feature-charalambos-main-The-Landmark-hotel-and-luxury-residence-complex-in-Nicosia-will-host-EU-delegates.jpg"
+						src={imageUrl}
 						alt=""
 					/>
 				</div>

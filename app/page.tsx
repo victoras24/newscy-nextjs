@@ -20,6 +20,7 @@ const News: React.FC = () => {
 									summary={article.summary}
 									date={article.date}
 									url={article.url}
+									imageUrl={article.image_url}
 								/>
 							);
 						})
