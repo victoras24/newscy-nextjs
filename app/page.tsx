@@ -15,9 +15,10 @@ const News: React.FC = () => {
 							<NewsCard
 								key={index}
 								category={article.category}
-								title={article.title}
-								summary={article.snippet}
+								rewritten_title={article.rewritten_title}
+								summary={article.summary}
 								date={article.date}
+								url={article.url}
 							/>
 						);
 					})}
