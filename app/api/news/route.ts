@@ -1,11 +1,44 @@
 import { NextResponse } from "next/server";
 import Perplexity from "@perplexity-ai/perplexity_ai";
 import supabaseClient from "@/app/lib/supabaseClient";
+import getImageByKeyWords from "@/app/lib/pexelClient";
 
 export async function GET() {
 	const client = new Perplexity({
 		apiKey: process.env.NEXT_PURPLE_API_KEY,
 	});
+	const query = `Find the most important Cyprus news from the last 24 hours.
+
+For each article:
+- Extract the original title
+- Create a rewritten, more engaging title  
+- Write a 1–2 sentence summary
+- Provide the original source URL
+- Categorize the story
+- Identify the source publication
+- Generate image search keywords (3-5 words that would find a relevant photo)
+
+IMAGE SEARCH GUIDELINES:
+- Focus on the main subject (e.g., "electric car" not just "car")
+- Include location if relevant (e.g., "Cyprus landscape")
+- Include action if relevant (e.g., "protest", "construction")
+- Be specific but not too narrow
+- Use English terms that work well with stock photo databases
+
+Return only 5-7 most important distinct stories.
+
+JSON format:
+[
+  {
+    "original_title": "",
+    "rewritten_title": "",
+    "summary": "",
+    "url": "",
+    "category": "",
+    "source": "",
+    "image_search_query": ""
+  }
+]`;
 
 	try {
 		const response = await client.chat.completions.create({
@@ -13,34 +46,13 @@ export async function GET() {
 			messages: [
 				{
 					role: "system",
-					content:
-						"You produce structured news summaries based on real sources.",
+					content: `You produce structured news summaries with image search keywords. 
+For each article, generate 3-5 specific keywords that would find a relevant image on Unsplash.
+Focus on the main subject, location, and action.`,
 				},
 				{
 					role: "user",
-					content: `
-                  Find the most important and distinct Cyprus news from the last 24 hours.
-
-                  Focus on:
-                  - News specifically about Cyprus or directly affecting Cyprus
-                  - Stories from reputable Cypriot news sources
-
-              DEDUPLICATION RULES:
-              - If multiple sources cover the same event, select the most authoritative source
-              - Look for unique angles or developments in each story
-              - Avoid including the same news event multiple times
-              - Prioritize stories with significant impact
-
-              For each unique story:
-              - Extract the original title exactly as published
-              - Create a compelling rewritten title (max 80 characters)
-              - Write a concise 1-2 sentence summary highlighting key facts
-              - Provide the direct source URL
-              - Categorize: politics, crime, economy, society, sports, environment, health, education
-              - Name the source publication
-
-              Return maximum 6 distinct stories in JSON format.
-    `,
+					content: query,
 				},
 			],
 			response_format: {
@@ -58,6 +70,7 @@ export async function GET() {
 								url: { type: "string" },
 								category: { type: "string" },
 								source: { type: "string" },
+								image_search_query: { type: "string" },
 							},
 							required: [
 								"original_title",
@@ -66,6 +79,7 @@ export async function GET() {
 								"url",
 								"category",
 								"source",
+								"image_search_query",
 							],
 						},
 					},
@@ -80,19 +94,31 @@ export async function GET() {
 			],
 		});
 
-		var articles = response.choices[0].message.content;
+		const articles = response.choices[0].message.content;
 
 		if (typeof articles === "string") {
-			articles = JSON.parse(articles);
+			const articlesArray = JSON.parse(articles);
+
+			for (const article of articlesArray) {
+				const image = await getImageByKeyWords(article.image_search_query);
+				if (image) {
+					article.image_id = image.id;
+					article.image_url = image.url;
+				} else {
+					article.image_id = null;
+					article.image_url = null;
+				}
+			}
+
 			const { data, error } = await supabaseClient
 				.from("articles")
-				.insert(articles)
+				.insert(articlesArray)
 				.select();
 
 			if (data) {
 				return NextResponse.json({
 					success: true,
-					articles: articles,
+					articles: articlesArray,
 					data: data,
 				});
 			} else if (error) {
