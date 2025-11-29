@@ -106,26 +106,6 @@ export async function GET() {
 		} else {
 			return NextResponse.json({ message: "its not string" }); // need to think how to handle it.
 		}
-
-		// articles?.forEach(async (article) => {
-		// 	const { title, url, date, last_updated, snippet, source } = article;
-		// 	const { error, data } = await supabaseClient
-		// 		.from("articles")
-		// 		.insert({ title, url, date, last_updated, snippet, source })
-		// 		.select();
-		// 	if (error) {
-		// 		console.error("Database error:", error);
-		// 		return NextResponse.json(
-		// 			{ error: "Failed to save articles to database" },
-		// 			{ status: 500 }
-		// 		);
-		// 	}
-
-		// 	return NextResponse.json({
-		// 		success: true,
-		// 		articles: data,
-		// 	});
-		// });
 	} catch (error: any) {
 		return NextResponse.json(
 			{ error: error.message || "Unknown error" },
