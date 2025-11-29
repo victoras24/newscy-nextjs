@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import Perplexity from "@perplexity-ai/perplexity_ai";
-import type { NextApiRequest, NextApiResponse } from "next";
 import supabaseClient from "@/app/lib/supabaseClient";
 
 export async function GET() {
@@ -81,42 +80,56 @@ export async function GET() {
 			],
 		});
 
-		const articles = response.search_results;
-		// return NextResponse.json(articles);
-		articles?.forEach(async (article) => {
-			const { title, url, date, last_updated, snippet, source } = article;
-			const { error, data } = await supabaseClient
+		var articles = response.choices[0].message.content;
+
+		if (typeof articles === "string") {
+			articles = JSON.parse(articles);
+			const { data, error } = await supabaseClient
 				.from("articles")
-				.insert({ title, url, date, last_updated, snippet, source })
+				.insert(articles)
 				.select();
-			if (error) {
-				console.error("Database error:", error);
-				return NextResponse.json(
-					{ error: "Failed to save articles to database" },
-					{ status: 500 }
-				);
+
+			if (data) {
+				return NextResponse.json({
+					success: true,
+					articles: articles,
+					data: data,
+				});
+			} else if (error) {
+				return Response.json({
+					success: false,
+					message: error.message,
+					cause: error.cause,
+					code: error.code,
+				});
 			}
+		} else {
+			return NextResponse.json({ message: "its not string" }); // need to think how to handle it.
+		}
 
-			console.log("Saved to DB:", data);
+		// articles?.forEach(async (article) => {
+		// 	const { title, url, date, last_updated, snippet, source } = article;
+		// 	const { error, data } = await supabaseClient
+		// 		.from("articles")
+		// 		.insert({ title, url, date, last_updated, snippet, source })
+		// 		.select();
+		// 	if (error) {
+		// 		console.error("Database error:", error);
+		// 		return NextResponse.json(
+		// 			{ error: "Failed to save articles to database" },
+		// 			{ status: 500 }
+		// 		);
+		// 	}
 
-			return NextResponse.json({
-				success: true,
-				articles: data,
-			});
-		});
+		// 	return NextResponse.json({
+		// 		success: true,
+		// 		articles: data,
+		// 	});
+		// });
 	} catch (error: any) {
 		return NextResponse.json(
 			{ error: error.message || "Unknown error" },
 			{ status: 500 }
 		);
-	}
-}
-
-export async function getNewsDataFromDb() {
-	try {
-		const data = await supabaseClient.from("articles").select;
-		return NextResponse.json({ success: true, articles: data });
-	} catch (error) {
-		return NextResponse.json({ error: error }, { status: 500 });
 	}
 }
