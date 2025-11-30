@@ -1,7 +1,7 @@
 import supabaseClient from "@/app/lib/supabaseClient";
 import { createClient } from "pexels";
 
-const client = createClient(`${process.env.NEXT_PUBLIC_PEXEL_API}`);
+const client = createClient(`${process.env.NEXT_PEXEL_API}`);
 
 const getImageByKeyWords = async (query: string) => {
 	try {
