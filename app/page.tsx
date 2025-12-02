@@ -3,9 +3,14 @@ import Weather from "./components/Weather";
 import supabaseClient from "./lib/supabaseClient";
 import NewsCard from "./components/NewsCard";
 
-const News: React.FC = () => {
+const News: React.FC<{ categoryFilter: string }> = ({ categoryFilter }) => {
 	async function LoadNews() {
-		const { data } = await supabaseClient.from("articles").select("*");
+		const { data } = categoryFilter
+			? await supabaseClient
+					.from("articles")
+					.select("*")
+					.like("category", `%${categoryFilter}%`)
+			: await supabaseClient.from("articles").select("*");
 
 		if (data) {
 			return (

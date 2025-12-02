@@ -17,7 +17,7 @@ const getImageByKeyWords = async (query: string) => {
 		const imageObj = imageData.photos[0];
 
 		const columns = {
-			url: imageObj.src.original,
+			url: imageObj.src.tiny,
 			photographer: imageObj.photographer,
 			photographer_url: imageObj.photographer_url,
 			alt: imageObj.alt,

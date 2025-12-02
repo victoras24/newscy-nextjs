@@ -5,7 +5,7 @@ export const NavigationBar: React.FC = () => {
 	async function loadCategories() {
 		const { data } = await supabaseClient.from("articles").select("category");
 		const dataArray = data?.map((d) => {
-			return d.category;
+			return d.category.split("/")[0];
 		});
 		const uniqueArray = [...new Set(dataArray)];
 
@@ -26,7 +26,7 @@ export const NavigationBar: React.FC = () => {
 				<h1>A LOGO MAYBE</h1>
 			</div>
 			<div className="flex justify-center items-center md:gap-6">
-				<NavigationSection text="Home" navigate={""} />
+				<NavigationSection text="Home" navigate={"/"} />
 				<NavigationSection text="Saved" navigate={"/saved"} />
 				{loadCategories()}
 			</div>

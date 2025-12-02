@@ -17,7 +17,6 @@ const NewsCard: React.FC<NewsCardProps> = ({
 	url,
 	imageUrl,
 }) => {
-	console.log(imageUrl);
 	return (
 		<div>
 			<hr className="h-px my-2 bg-gray-200 border-0 mx-4" />
