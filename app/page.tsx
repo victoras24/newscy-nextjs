@@ -15,21 +15,19 @@ const News: React.FC<{ categoryFilter: string }> = ({ categoryFilter }) => {
 		if (data) {
 			return (
 				<div>
-					{data
-						.map((article, index) => {
-							return (
-								<NewsCard
-									key={index}
-									category={article.category}
-									rewritten_title={article.rewritten_title}
-									summary={article.summary}
-									date={article.date}
-									url={article.url}
-									imageUrl={article.image_url}
-								/>
-							);
-						})
-						.reverse()}
+					{data.map((article, index) => {
+						return (
+							<NewsCard
+								key={index}
+								category={article.category}
+								rewritten_title={article.rewritten_title}
+								summary={article.summary}
+								date={article.date}
+								url={article.url}
+								imageUrl={article.image_url}
+							/>
+						);
+					})}
 				</div>
 			);
 		}
