@@ -16,7 +16,8 @@
     "pexels": "^1.4.0",
     "react": "19.2.0",
     "react-dom": "19.2.0",
-    "sass": "^1.94.2"
+    "sass": "^1.94.2",
+    "twitter-api-v2": "^1.28.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

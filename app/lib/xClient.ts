@@ -1,33 +1,21 @@
-import {
-	Client,
-	OAuth2,
-	generateCodeVerifier,
-	generateCodeChallenge,
-} from "@xdevplatform/xdk";
+import { Client, OAuth1Config, OAuth1, ClientConfig } from "@xdevplatform/xdk";
 
 const xClient = async () => {
-	const oauth2 = new OAuth2({
-		clientId: `${process.env.NEXT_X_API_APP_ID}`,
-		clientSecret: `${process.env.NEXT_X_API_CLIENT_SECRET}`,
-		redirectUri: "https://example.com",
-		scope: ["tweet.read", "users.read", "offline.access"],
-	});
+	const oauth1Config: OAuth1Config = {
+		apiKey: process.env.NEXT_X_API_KEY!,
+		apiSecret: process.env.NEXT_X_API_KEY_SECRET!,
+		accessToken: process.env.NEXT_X_ACCESS_TOKEN!,
+		accessTokenSecret: process.env.NEXT_X_ACCESS_TOKEN_SECRET!,
+		callback: "",
+	};
 
-	console.log(oauth2);
+	const oauth1: OAuth1 = new OAuth1(oauth1Config);
+	const config: ClientConfig = {
+		oauth1: oauth1,
+	};
+	const client: Client = new Client(config);
 
-	const state = "example-state";
-	const codeVerifier = generateCodeVerifier();
-	const codeChallenge = await generateCodeChallenge(codeVerifier);
-	oauth2.setPkceParameters(codeVerifier, codeChallenge);
-	const authUrl = await oauth2.getAuthorizationUrl(state);
-
-	const tokens = await oauth2.exchangeCode(authCode, codeVerifier);
-
-	const client = new Client({ accessToken: tokens.access_token });
-
-	const response = await client.users.getMe();
-	const me = response.data;
-	console.log(me);
+	return client;
 };
 
 export default xClient;
