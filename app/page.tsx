@@ -2,9 +2,11 @@ import CurrentDate from "./components/CurrentDate";
 import Weather from "./components/Weather";
 import supabaseClient from "./lib/supabaseClient";
 import NewsCard from "./components/NewsCard";
+import xClient from "./lib/xClient";
 
 const News: React.FC<{ categoryFilter: string }> = ({ categoryFilter }) => {
 	async function LoadNews() {
+		await xClient();
 		const { data } = categoryFilter
 			? await supabaseClient
 					.from("articles")

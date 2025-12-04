@@ -12,7 +12,7 @@ export async function GET() {
 For each article:
 - Extract the original title
 - Create a rewritten, more engaging title  
-- Write a 1–2 sentence summary
+- Write a 1-2 sentence summary
 - Provide the original source URL
 - Categorize the story
 - Identify the source publication
