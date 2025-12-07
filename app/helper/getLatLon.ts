@@ -6,10 +6,15 @@ type coordination = {
 export const getLatLon = () => {
 	let coordinations: coordination = {} as coordination;
 	if ("geolocation" in navigator) {
-		navigator.geolocation.getCurrentPosition((success) => {
-			coordinations.lat = success.coords.latitude;
-			coordinations.lon = success.coords.longitude;
-		});
+		navigator.geolocation.getCurrentPosition(
+			(success) => {
+				coordinations.lat = success.coords.latitude;
+				coordinations.lon = success.coords.longitude;
+			},
+			(error) => {
+				console.log(error.message);
+			}
+		);
 	} else {
 		console.log("Geolocation is not supported in the browser");
 	}
