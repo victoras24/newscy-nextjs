@@ -1,12 +1,11 @@
-export const getWeatherInfo = () => {
+export const getWeatherInfo = async (lat: number, lon: number) => {
 	try {
-		const result = fetch(
-			"https://api.open-meteo.com/v1/forecast?latitude=52.52&longitude=13.41&hourly=temperature_2m"
-		)
-			.then((res) => res.json())
-			.then((data) => data);
+		const result = await fetch(
+			`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,weather_code`
+		);
+		const data = await result.json();
 
-		if (result) return result;
+		if (data) return data;
 	} catch (error) {
 		console.log(error);
 	}
