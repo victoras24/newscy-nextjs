@@ -35,7 +35,7 @@ const News: React.FC<{ categoryFilter: string }> = ({ categoryFilter }) => {
 
 	return (
 		<>
-			<div className="flex justify-between">
+			<div className="flex items-center justify-between">
 				<CurrentDate />
 				<Weather />
 			</div>
