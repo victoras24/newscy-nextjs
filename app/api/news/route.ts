@@ -2,11 +2,13 @@ import { NextResponse } from "next/server";
 import Perplexity from "@perplexity-ai/perplexity_ai";
 import supabaseClient from "@/app/lib/supabaseClient";
 import getImageByKeyWords from "@/app/lib/pexelClient";
+import xClient from "@/app/lib/xClient";
 
 export async function GET() {
 	const client = new Perplexity({
 		apiKey: process.env.NEXT_PURPLE_API_KEY,
 	});
+	const tweetClient = await xClient();
 	const query = `Find the most important Cyprus news from the last 24 hours.
 
 For each article:
@@ -98,6 +100,16 @@ Focus on the main subject, location, and action.`,
 
 		if (typeof articles === "string") {
 			const articlesArray = JSON.parse(articles);
+
+			articlesArray.forEach(async (article: any) => {
+				await tweetClient.posts.create({
+					text: `${article.rewritten_title} ${article.url}`,
+				});
+				await fetch(
+					`https://graph.facebook.com/v24.0/879209251948743/feed?message=${article.rewritten_title}&link=${article.url}&access_token=${process.env.NEXT_FACEBOOK_ACCESS_TOKEN}`,
+					{ method: "POST" }
+				);
+			});
 
 			for (const article of articlesArray) {
 				const image = await getImageByKeyWords(article.image_search_query);

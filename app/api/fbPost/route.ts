@@ -3,16 +3,16 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
 	try {
-		const { text } = await request.json();
+		const { message, url } = await request.json();
 
-		if (!text || text.length > 280) {
+		if (!message || message.length > 280) {
 			return NextResponse.json(
-				{ error: "Invalid text or length" },
+				{ error: "Invalid message or length" },
 				{ status: 400 }
 			);
 		}
 
-		const facebookResponse = await postFacebook(text);
+		const facebookResponse = await postFacebook(message, url);
 		console.log("Facebook post posted:", facebookResponse);
 
 		return NextResponse.json({ success: true, data: facebookResponse });
