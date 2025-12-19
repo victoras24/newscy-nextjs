@@ -1,5 +1,26 @@
+import type { Metadata } from "next";
+import { Geist, Geist_Mono, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
-import { NavigationBar } from "./components/NavigationBar";
+
+const jetbrainsMono = JetBrains_Mono({
+	subsets: ["latin"],
+	variable: "--font-sans",
+});
+
+const geistSans = Geist({
+	variable: "--font-geist-sans",
+	subsets: ["latin"],
+});
+
+const geistMono = Geist_Mono({
+	variable: "--font-geist-mono",
+	subsets: ["latin"],
+});
+
+export const metadata: Metadata = {
+	title: "Cyprus News Today",
+	description: "",
+};
 
 export default function RootLayout({
 	children,
@@ -7,12 +28,11 @@ export default function RootLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-		<html>
-			<body>
-				<div className={`min-h-screen flex flex-col flex-1`}>
-					<NavigationBar />
-					<main className="flex-1 md:px-50">{children}</main>
-				</div>
+		<html lang="en" className={jetbrainsMono.variable}>
+			<body
+				className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+			>
+				{children}
 			</body>
 		</html>
 	);
