@@ -1,4 +1,6 @@
 import "../style/_newsCard.scss";
+import { Badge } from "./badge";
+import { Card } from "./Card";
 
 interface NewsCardProps {
 	category: string;
@@ -18,18 +20,15 @@ const NewsCard: React.FC<NewsCardProps> = ({
 	imageUrl,
 }) => {
 	return (
-		<div>
-			<hr className="h-px my-2 bg-gray-200 border-0 mx-4" />
-			<div className="flex justify-between items-center bg-neutral-primary-soft p-4 rounded-xl md:flex-row">
-				<div className="">
-					<img
-						className="news-card__image object-cover w-full rounded-xl mr-4"
-						src={imageUrl}
-						alt=""
-					/>
-				</div>
+		<Card>
+			<div className="flex justify-between items-center bg-neutral-primary-soft px-4 rounded-xl md:flex-row">
+				<img
+					className="news-card__image object-cover w-full rounded mr-4"
+					src={imageUrl}
+					alt="Article image"
+				/>
 				<div className="flex flex-col justify-items-end items-end md:pl-4 leading-normal ">
-					<h5>{category}</h5>
+					<Badge variant="secondary">{category}</Badge>
 					<a
 						href={url}
 						target="_blank"
@@ -40,8 +39,8 @@ const NewsCard: React.FC<NewsCardProps> = ({
 					<span className="text-sm">{date}</span>
 				</div>
 			</div>
-			<div className="p-4">{summary}</div>
-		</div>
+			<div className="px-4">{summary}</div>
+		</Card>
 	);
 };
 
