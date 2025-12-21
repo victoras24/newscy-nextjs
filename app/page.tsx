@@ -38,10 +38,6 @@ const News: React.FC<{ categoryFilter: string }> = ({ categoryFilter }) => {
 
 	return (
 		<>
-			<div className="flex items-center justify-between">
-				<CurrentDate />
-				<Weather />
-			</div>
 			<div className="grid grid-cols-1 md:grid-cols-12 md:gap-4">
 				<div className="bg-white rounded-xl md:col-span-8">
 					<div>

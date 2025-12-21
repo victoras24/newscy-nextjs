@@ -7,11 +7,7 @@ const CurrentDate: React.FC = () => {
 		day: "numeric",
 	}).format(today);
 
-	return (
-		<div className="py-5 text-xl text-neutral-500 font-medium">
-			{formattedDate}
-		</div>
-	);
+	return <span>{formattedDate}</span>;
 };
 
 export default CurrentDate;

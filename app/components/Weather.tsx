@@ -25,7 +25,7 @@ const Weather: React.FC = async () => {
 
 	function WeatherIcon(code: any) {
 		const Icon = weatherIcons[code] || weatherIcons[0];
-		return <Icon size={48} />;
+		return <Icon size={33} />;
 	}
 
 	const getTime = () => {
@@ -59,15 +59,10 @@ const Weather: React.FC = async () => {
 	const cleanData = timeTemperatureWeatherCodeMap.get(time);
 
 	return (
-		<div className="flex items-center gap-2 max-w-sm rounded-xl overflow-hidden shadow-lg my-3 p-3 bg-white">
+		<div className="flex items-center">
 			<span>{WeatherIcon(cleanData?.weatherCode)}</span>
-			<div className="flex flex-col justify-between items-center">
-				<h2 className="text-md font-bold">Paphos</h2>
-				<h1 className="text-xl font-bold">
-					{cleanData?.temperature}
-					{data?.hourly_units.temperature_2m}
-				</h1>
-			</div>
+			<span>{cleanData?.temperature}</span>
+			<span>{data?.hourly_units.temperature_2m}</span>
 		</div>
 	);
 };
