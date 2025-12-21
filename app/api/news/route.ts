@@ -20,6 +20,7 @@ For each article:
 - Categorize the story
 - Identify the source publication
 - Generate image search keywords (3-5 words that would find a relevant photo)
+- Generate Full Article
 
 IMAGE SEARCH GUIDELINES:
 - Focus on the main subject (e.g., "electric car" not just "car")
@@ -27,6 +28,12 @@ IMAGE SEARCH GUIDELINES:
 - Include action if relevant (e.g., "protest", "construction")
 - Be specific but not too narrow
 - Use English terms that work well with stock photo databases
+
+Full Article:
+- Write a complete, original article (approximately 300-500 words) based on the story.
+- Tone: Serious, factual, and professional.
+- Content: Synthesize information from the source. Develop the narrative with context, explanations of implications, relevant background, and quotes if available. Do not copy sentences or phrasing from the source article.
+- Structure: It should read as a standalone journalistic piece with a logical flow (e.g., lead, details, context, reactions, future outlook).
 
 Return only 5-7 most important distinct stories.
 
@@ -39,7 +46,8 @@ JSON format:
     "url": "",
     "category": "",
     "source": "",
-    "image_search_query": ""
+    "image_search_query": "",
+    "full_article": ""
   }
 ]`;
 
@@ -49,7 +57,7 @@ JSON format:
 			messages: [
 				{
 					role: "system",
-					content: `You produce structured news summaries with image search keywords. 
+					content: `You produce structured news with image search keywords. 
 For each article, generate 3-5 specific keywords that would find a relevant image on Unsplash.
 Focus on the main subject, location, and action.`,
 				},
@@ -74,6 +82,7 @@ Focus on the main subject, location, and action.`,
 								category: { type: "string" },
 								source: { type: "string" },
 								image_search_query: { type: "string" },
+								full_article: { type: "string" },
 							},
 							required: [
 								"original_title",
@@ -83,6 +92,7 @@ Focus on the main subject, location, and action.`,
 								"category",
 								"source",
 								"image_search_query",
+								"full_article",
 							],
 						},
 					},
