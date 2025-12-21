@@ -1,5 +1,3 @@
-import CurrentDate from "./components/CurrentDate";
-import Weather from "./components/Weather";
 import supabaseClient from "./lib/supabaseClient";
 import NewsCard from "./components/NewsCard";
 import { LoginForm } from "./components/LoginForm";
