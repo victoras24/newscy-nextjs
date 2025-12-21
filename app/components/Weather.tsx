@@ -1,26 +1,10 @@
 import { getWeatherInfo } from "../lib/getWeatherInfo";
 import { weatherIcons } from "../helper/weatherIcons";
-import { getLatLon } from "../helper/getLatLon";
-import { getCity } from "../lib/getCity";
-
-interface WeatherDataProps {
-	elevation: number;
-	generationtime_ms: number;
-	hourly: { time: string[]; temperature_2m: number[]; weather_code: number[] };
-	hourly_units: { time: string; temperature_2m: string };
-	latitude: number;
-	longitude: number;
-	timezone: string;
-	timezone_abbreviation: string;
-	utc_offset_seconds: number;
-}
 
 const Weather: React.FC = async () => {
-	const geolocation = getLatLon();
-	const lat = geolocation.lat | 34.7768;
-	const lon = geolocation.lon | 32.4245;
+	const lat = 34.7768;
+	const lon = 32.4245;
 
-	const city = await getCity(lat, lon); // better to fetch data from google api
 	const data = await getWeatherInfo(lat, lon);
 
 	function WeatherIcon(code: any) {
