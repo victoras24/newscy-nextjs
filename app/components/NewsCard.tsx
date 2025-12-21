@@ -3,20 +3,20 @@ import { Badge } from "./badge";
 import { Card } from "./Card";
 
 interface NewsCardProps {
+	id: string;
 	category: string;
 	rewritten_title: string;
 	summary: string;
 	date: string;
-	url: string;
 	imageUrl: string;
 }
 
 const NewsCard: React.FC<NewsCardProps> = ({
+	id,
 	category,
 	rewritten_title,
 	summary,
 	date,
-	url,
 	imageUrl,
 }) => {
 	return (
@@ -30,8 +30,7 @@ const NewsCard: React.FC<NewsCardProps> = ({
 				<div className="flex flex-col justify-items-end items-end md:pl-4 leading-normal ">
 					<Badge variant="secondary">{category}</Badge>
 					<a
-						href={url}
-						target="_blank"
+						href={`/article/${id}`}
 						className="mb-2 text-lg font-medium text-end hover:cursor-pointer hover:underline underline-offset-2"
 					>
 						{rewritten_title}

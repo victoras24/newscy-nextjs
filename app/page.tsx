@@ -20,11 +20,11 @@ const News: React.FC<{ categoryFilter: string }> = ({ categoryFilter }) => {
 						return (
 							<NewsCard
 								key={index}
+								id={article.id}
 								category={article.category}
 								rewritten_title={article.rewritten_title}
 								summary={article.summary}
 								date={article.date}
-								url={article.url}
 								imageUrl={article.image_url}
 							/>
 						);
