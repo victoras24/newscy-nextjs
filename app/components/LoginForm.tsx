@@ -33,6 +33,7 @@ export function LoginForm({
 									type="email"
 									placeholder="m@example.com"
 									required
+									autoComplete={"email"}
 								/>
 							</Field>
 							<Field>
@@ -45,7 +46,12 @@ export function LoginForm({
 										Forgot your password?
 									</a>
 								</div>
-								<Input id="password" type="password" required />
+								<Input
+									id="password"
+									type="password"
+									required
+									autoComplete={"current-password"}
+								/>
 							</Field>
 							<Field>
 								<Button type="submit">Login</Button>
