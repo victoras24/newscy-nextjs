@@ -114,17 +114,20 @@ Focus on the main subject, location, and action.`,
 
 			articlesArray.forEach(async (article: any) => {
 				await tweetClient.posts.create({
-					text: `${article.rewritten_title} ${article.url}`,
+					text: `${article.rewritten_title} ${process.env.NEXT_BASE_ROUTE}/article/${article.id}`,
 				});
 				await fetch(
-					`https://graph.facebook.com/v24.0/879209251948743/feed?message=${article.rewritten_title}&link=${article.url}&access_token=${process.env.NEXT_FACEBOOK_ACCESS_TOKEN}`,
+					`https://graph.facebook.com/v24.0/879209251948743/feed?message=${article.rewritten_title}&link=${process.env.NEXT_BASE_ROUTE}/article/${article.id}&access_token=${process.env.NEXT_FACEBOOK_ACCESS_TOKEN}`,
 					{ method: "POST" }
 				);
 			});
 
 			for (const article of articlesArray) {
 				const image = await getImageByKeyWords(article.image_search_query);
-				if (image) {
+				if (article.rewritten_title?.toLowerCase().includes("police")) {
+					article.image_url =
+						"https://www.police.gov.cy/police/police.nsf/2E3264317874994BC2258608003B74F9/$file/IMG_0115b.jpg";
+				} else if (image) {
 					article.image_id = image.id;
 					article.image_url = image.url;
 				} else {
