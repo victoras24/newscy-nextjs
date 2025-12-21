@@ -16,6 +16,7 @@ For each article:
 - Create a rewritten, more engaging title  
 - Write a 1-2 sentence summary
 - Provide the original source URL
+- Categorize the story using exactly ONE word only (no slashes, no hyphens, no compound terms)
 - Categorize the story
 - Identify the source publication
 - Generate image search keywords (3-5 words that would find a relevant photo)
