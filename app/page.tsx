@@ -37,16 +37,8 @@ const News: React.FC<{ categoryFilter: string }> = ({ categoryFilter }) => {
 	return (
 		<>
 			<div className="grid grid-cols-1 md:grid-cols-12 md:gap-4 ">
-				<div className=" rounded-xl md:col-span-8">
-					<div>
-						<h2 className="p-4">News</h2>
-					</div>
-					{LoadNews()}
-				</div>
-				<div className=" rounded-xl md:col-span-4">
-					<div>
-						<h2 className="p-4">News</h2>
-					</div>
+				<div className="md:col-span-8">{LoadNews()}</div>
+				<div className="md:col-span-4">
 					<LoginForm />
 				</div>
 			</div>
