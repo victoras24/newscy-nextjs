@@ -108,7 +108,7 @@ Focus on the main subject, location, and action.`,
 		});
 
 		const articles = response.choices[0].message.content;
-
+		console.log(articles);
 		if (typeof articles === "string") {
 			const articlesArray = JSON.parse(articles);
 
@@ -121,6 +121,9 @@ Focus on the main subject, location, and action.`,
 					{ method: "POST" }
 				);
 			});
+
+			// article.id is undefined, because we are fetching the data before adding articles in db. i think we have to
+			// post using the created route after inserting data to the db
 
 			for (const article of articlesArray) {
 				const image = await getImageByKeyWords(article.image_search_query);
