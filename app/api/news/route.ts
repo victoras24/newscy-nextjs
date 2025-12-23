@@ -108,22 +108,9 @@ Focus on the main subject, location, and action.`,
 		});
 
 		const articles = response.choices[0].message.content;
-		console.log(articles);
+
 		if (typeof articles === "string") {
 			const articlesArray = JSON.parse(articles);
-
-			articlesArray.forEach(async (article: any) => {
-				await tweetClient.posts.create({
-					text: `${article.rewritten_title} ${process.env.NEXT_BASE_ROUTE}/article/${article.id}`,
-				});
-				await fetch(
-					`https://graph.facebook.com/v24.0/879209251948743/feed?message=${article.rewritten_title}&link=${process.env.NEXT_BASE_ROUTE}/article/${article.id}&access_token=${process.env.NEXT_FACEBOOK_ACCESS_TOKEN}`,
-					{ method: "POST" }
-				);
-			});
-
-			// article.id is undefined, because we are fetching the data before adding articles in db. i think we have to
-			// post using the created route after inserting data to the db
 
 			for (const article of articlesArray) {
 				const image = await getImageByKeyWords(article.image_search_query);
@@ -145,6 +132,8 @@ Focus on the main subject, location, and action.`,
 				.select();
 
 			if (data) {
+				await tweetArticle(data, tweetClient);
+				await fbPostArticle(data);
 				return NextResponse.json({
 					success: true,
 					articles: articlesArray,
@@ -168,3 +157,23 @@ Focus on the main subject, location, and action.`,
 		);
 	}
 }
+
+const tweetArticle = async (
+	data: any[],
+	tweetClient: Awaited<ReturnType<typeof xClient>>
+) => {
+	data.forEach(async (article) => {
+		await tweetClient.posts.create({
+			text: `${article.rewritten_title} ${process.env.NEXT_BASE_ROUTE}/article/${article.id}`,
+		});
+	});
+};
+
+const fbPostArticle = async (data: any[]) => {
+	data.forEach(async (article) => {
+		await fetch(
+			`https://graph.facebook.com/v24.0/879209251948743/feed?message=${article.rewritten_title}&link=${process.env.NEXT_BASE_ROUTE}/article/${article.id}&access_token=${process.env.NEXT_FACEBOOK_ACCESS_TOKEN}`,
+			{ method: "POST" }
+		);
+	});
+};
