@@ -19,7 +19,7 @@ const Article = async ({
 				<Head>
 					<meta property="og:title" content={data.rewritten_title} />
 					<meta property="og:description" content={data.summary} />
-					<meta property="og:image" content={data.image_url} />
+					<meta property="og:image" content={data.large_img_url} />
 					<meta
 						property="og:url"
 						content={`${process.env.NEXT_BASE_ROUTE}/articles/${data.id}`}
@@ -31,7 +31,7 @@ const Article = async ({
 					</h1>
 					<div>
 						<picture>
-							<img className="w-full" src={data.image_url} />
+							<img className="w-full" src={data.large_img_url} />
 						</picture>
 					</div>
 					{data.full_article

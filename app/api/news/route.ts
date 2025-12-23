@@ -120,6 +120,7 @@ Focus on the main subject, location, and action.`,
 				} else if (image) {
 					article.image_id = image.id;
 					article.image_url = image.url;
+					article.large_img_url = image.large_img_url;
 				} else {
 					article.image_id = null;
 					article.image_url = null;
