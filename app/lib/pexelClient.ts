@@ -21,6 +21,7 @@ const getImageByKeyWords = async (query: string) => {
 			photographer: imageObj.photographer,
 			photographer_url: imageObj.photographer_url,
 			alt: imageObj.alt,
+			large_img_url: imageObj.src.original,
 		};
 
 		const { data, error } = await supabaseClient
