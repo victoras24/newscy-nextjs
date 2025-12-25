@@ -12,8 +12,6 @@ export const LoadMore = () => {
 
 	const ref = useRef<HTMLDivElement | null>(null);
 
-	const loadMoreData = async () => {};
-
 	useEffect(() => {
 		const handleIntersect = (entries: IntersectionObserverEntry[]) => {
 			entries.forEach(async (entry) => {
@@ -58,22 +56,20 @@ export const LoadMore = () => {
 
 	return (
 		<div ref={ref}>
-			<div>
-				{posts &&
-					posts.map((article: any, index: number) => {
-						return (
-							<NewsCard
-								key={index}
-								id={article.id}
-								category={article.category}
-								rewritten_title={article.rewritten_title}
-								summary={article.summary}
-								date={article.date}
-								imageUrl={article.image_url}
-							/>
-						);
-					})}
-			</div>
+			{posts &&
+				posts.map((article: any, index: number) => {
+					return (
+						<NewsCard
+							key={index}
+							id={article.id}
+							category={article.category}
+							rewritten_title={article.rewritten_title}
+							summary={article.summary}
+							date={article.date}
+							imageUrl={article.image_url}
+						/>
+					);
+				})}
 			{hasMore && <span>Load more...</span>}
 		</div>
 	);

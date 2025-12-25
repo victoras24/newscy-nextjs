@@ -2,7 +2,7 @@ import { cva, VariantProps } from "class-variance-authority";
 import { ReactNode } from "react";
 import { cn } from "../lib/utils";
 
-const barVariants = cva("flex justify-between items-center md:my-4 py-1 px-3", {
+const barVariants = cva("flex justify-between items-center py-1 px-3", {
 	variants: {
 		variant: {
 			primary: "bg-foreground text-background",

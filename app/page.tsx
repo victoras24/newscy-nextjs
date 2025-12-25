@@ -1,6 +1,9 @@
 import supabaseClient from "./lib/supabaseClient";
 import NewsCard from "./components/NewsCard";
 import { LoginForm } from "./components/LoginForm";
+import { LoadMore } from "./components/LoadMore";
+
+const PAGE_SIZE = 10;
 
 const News: React.FC<{ categoryFilter: string }> = ({ categoryFilter }) => {
 	async function LoadNews() {
@@ -12,7 +15,9 @@ const News: React.FC<{ categoryFilter: string }> = ({ categoryFilter }) => {
 			: await supabaseClient
 					.from("articles")
 					.select("*")
+					.range(0, PAGE_SIZE - 1)
 					.order("date", { ascending: false });
+
 		if (data) {
 			return (
 				<div>
@@ -37,7 +42,9 @@ const News: React.FC<{ categoryFilter: string }> = ({ categoryFilter }) => {
 	return (
 		<>
 			<div className="grid grid-cols-1 md:grid-cols-12 md:gap-4 ">
-				<div className="md:col-span-8">{LoadNews()}</div>
+				<div className="md:col-span-8">
+					{LoadNews()} <LoadMore />
+				</div>
 				<div className="md:col-span-4">
 					<LoginForm />
 				</div>
