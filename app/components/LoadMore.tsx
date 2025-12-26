@@ -21,6 +21,9 @@ export const LoadMore = () => {
 					const from = page * 10;
 					const to = from + 10 - 1;
 
+					console.log("from", from);
+					console.log("to", to);
+
 					const { data } = await supabase
 						.from("articles")
 						.select("*")
@@ -29,10 +32,12 @@ export const LoadMore = () => {
 
 					if (data) {
 						setPosts((prev: any) => [...prev, ...data]);
+						console.log("Leeength", data.length);
 						if (data.length < 10) {
 							setHasMore(false);
 						}
-						setPage((prev) => prev + 1);
+						setPage((prev) => (prev += 1));
+						console.log("pagee", page);
 						setIsLoading(false);
 					}
 				}
@@ -45,17 +50,16 @@ export const LoadMore = () => {
 		};
 
 		const observer = new IntersectionObserver(handleIntersect, options);
+
 		if (ref.current !== null) {
 			observer.observe(ref.current);
-		} else {
-			console.log("Element is not loaded");
 		}
 
 		return () => observer.disconnect();
-	}, []);
+	}, [posts]);
 
 	return (
-		<div ref={ref}>
+		<div>
 			{posts &&
 				posts.map((article: any, index: number) => {
 					return (
@@ -70,7 +74,7 @@ export const LoadMore = () => {
 						/>
 					);
 				})}
-			{hasMore && <span>Load more...</span>}
+			{hasMore && <span ref={ref}>Load more...</span>}
 		</div>
 	);
 };
