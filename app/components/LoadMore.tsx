@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import NewsCard from "./NewsCard";
 import { supabaseBrowser } from "../lib/supabaseBrowser";
 
-export const LoadMore = () => {
+export const LoadMore: React.FC<{ pageSize: number }> = ({ pageSize }) => {
 	const [page, setPage] = useState<number>(1);
 	const [hasMore, setHasMore] = useState<boolean>(true);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -18,8 +18,8 @@ export const LoadMore = () => {
 				if (entry.isIntersecting && !isLoading && hasMore) {
 					const supabase = supabaseBrowser();
 					setIsLoading(true);
-					const from = page * 10;
-					const to = from + 10 - 1;
+					const from = page * pageSize;
+					const to = from + pageSize - 1;
 
 					const { data } = await supabase
 						.from("articles")
@@ -29,7 +29,7 @@ export const LoadMore = () => {
 
 					if (data) {
 						setPosts((prev: any) => [...prev, ...data]);
-						if (data.length < 10) {
+						if (data.length < pageSize) {
 							setHasMore(false);
 						}
 						setPage((prev) => (prev += 1));
