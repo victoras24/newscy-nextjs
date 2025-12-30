@@ -163,18 +163,23 @@ const tweetArticle = async (
 	data: any[],
 	tweetClient: Awaited<ReturnType<typeof xClient>>
 ) => {
-	data.forEach(async (article) => {
+	for (const article of data) {
 		await tweetClient.posts.create({
 			text: `${article.rewritten_title} ${process.env.NEXT_BASE_ROUTE}/article/${article.id}`,
 		});
-	});
+	}
 };
 
 const fbPostArticle = async (data: any[]) => {
-	data.forEach(async (article) => {
+	for (const article of data) {
+		const message = encodeURIComponent(article.rewritten_title);
+		const link = encodeURIComponent(
+			`${process.env.NEXT_BASE_ROUTE}/article/${article.id}`
+		);
+
 		await fetch(
-			`https://graph.facebook.com/v24.0/879209251948743/feed?message=${article.rewritten_title}&link=${process.env.NEXT_BASE_ROUTE}/article/${article.id}&access_token=${process.env.NEXT_FACEBOOK_ACCESS_TOKEN}`,
+			`https://graph.facebook.com/v24.0/879209251948743/feed?message=${message}&link=${link}&access_token=${process.env.NEXT_FACEBOOK_ACCESS_TOKEN}`,
 			{ method: "POST" }
 		);
-	});
+	}
 };
