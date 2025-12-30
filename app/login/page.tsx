@@ -1,12 +1,12 @@
 import News from "@/app/page";
 
-const CategoryPage = async ({
+const LoginPage = async ({
 	params,
 }: {
 	params: Promise<{ category: string }>;
 }) => {
 	const { category } = await params;
-	return <News categoryFilter={category} login={false} />;
+	return <News categoryFilter={category} login={true} />;
 };
 
-export default CategoryPage;
+export default LoginPage;

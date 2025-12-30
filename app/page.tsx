@@ -1,9 +1,13 @@
 import supabaseClient from "./lib/supabaseClient";
 import NewsCard from "./components/NewsCard";
-import { LoginForm } from "./components/LoginForm";
 import { LoadMore } from "./components/LoadMore";
+import { SignupForm } from "./components/SignUpForm";
+import { LoginForm } from "./components/LoginForm";
 
-const News: React.FC<{ categoryFilter: string }> = ({ categoryFilter }) => {
+const News: React.FC<{ categoryFilter: string; login: boolean }> = ({
+	categoryFilter,
+	login,
+}) => {
 	const PAGE_SIZE = 10;
 	async function LoadNews() {
 		const { data } = categoryFilter
@@ -45,7 +49,7 @@ const News: React.FC<{ categoryFilter: string }> = ({ categoryFilter }) => {
 					{LoadNews()} {!categoryFilter && <LoadMore pageSize={PAGE_SIZE} />}
 				</div>
 				<div className="md:col-span-4">
-					<LoginForm />
+					{login ? <LoginForm /> : <SignupForm />}
 				</div>
 			</div>
 		</>
