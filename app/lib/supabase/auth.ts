@@ -6,9 +6,11 @@ export const signUpNewUser = async (formData: FormData) => {
 	console.log(formData);
 
 	const rawFormData = {
-		email: formData.get("emailId"),
-		password: formData.get("passwordId"),
+		email: formData.get("email"),
+		password: formData.get("password"),
 	};
+
+	console.log(rawFormData);
 
 	const { data, error } = await supabaseClient.auth.signUp({
 		email: rawFormData.email as string,

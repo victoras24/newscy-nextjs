@@ -4,11 +4,12 @@ import { LoadMore } from "./components/LoadMore";
 import { SignupForm } from "./components/SignUpForm";
 import { LoginForm } from "./components/LoginForm";
 
-const News: React.FC<{ categoryFilter: string; login: boolean }> = ({
-	categoryFilter,
-	login,
-}) => {
+const News: React.FC<{
+	categoryFilter: string;
+	login: boolean;
+}> = ({ categoryFilter, login }) => {
 	const PAGE_SIZE = 10;
+
 	async function LoadNews() {
 		const { data } = categoryFilter
 			? await supabaseClient
