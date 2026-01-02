@@ -1,3 +1,4 @@
+import { signInWithEmail } from "../lib/supabase/auth";
 import { cn } from "../lib/utils";
 import { Button } from "./button";
 import {
@@ -24,7 +25,7 @@ export function LoginForm({
 					</CardDescription>
 				</CardHeader>
 				<CardContent>
-					<form>
+					<form action={signInWithEmail}>
 						<FieldGroup>
 							<Field>
 								<FieldLabel htmlFor="email">Email</FieldLabel>
