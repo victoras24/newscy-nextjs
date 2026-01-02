@@ -1,46 +1,48 @@
+import { revalidatePath } from "next/cache";
 import supabaseClient from "../supabaseClient";
 
-export class Auth {
-	loading: boolean = false;
-	/**
-	 *
-	 */
-	constructor() {}
+export const signUpNewUser = async (formData: FormData) => {
+	"use server";
+	console.log(formData);
 
-	signUpNewUser = async (email: string, password: string) => {
-		this.setIsLoading(true);
-		const { data, error } = await supabaseClient.auth.signUp({
-			email: email,
-			password: password,
-			options: {
-				emailRedirectTo: "/",
-			},
-		});
-		if (data) {
-			this.setIsLoading(false);
-			console.log(data);
-		} else if (error) {
-			this.setIsLoading(false);
-			console.log(error);
-		}
+	const rawFormData = {
+		email: formData.get("emailId"),
+		password: formData.get("passwordId"),
 	};
 
-	signInWithEmail = async (email: string, password: string) => {
-		this.setIsLoading(true);
-		const { data, error } = await supabaseClient.auth.signInWithPassword({
-			email: email,
-			password: password,
-		});
-		if (data) {
-			this.setIsLoading(false);
-			console.log(data);
-		} else if (error) {
-			this.setIsLoading(false);
-			console.log(error);
-		}
+	const { data, error } = await supabaseClient.auth.signUp({
+		email: rawFormData.email as string,
+		password: rawFormData.password as string,
+		options: {
+			emailRedirectTo: "/",
+		},
+	});
+
+	if (data) {
+		revalidatePath("/");
+		console.log(data);
+	} else if (error) {
+		console.log(error);
+	}
+};
+
+export const signInWithEmail = async (formData: FormData) => {
+	"use server";
+
+	const rawFormData = {
+		email: formData.get("emailId"),
+		password: formData.get("passwordId"),
 	};
 
-	setIsLoading = (isLoading: boolean) => {
-		this.loading = isLoading;
-	};
-}
+	const { data, error } = await supabaseClient.auth.signInWithPassword({
+		email: rawFormData.email as string,
+		password: rawFormData.password as string,
+	});
+
+	if (data) {
+		revalidatePath("/");
+		console.log(data);
+	} else if (error) {
+		console.log(error);
+	}
+};
