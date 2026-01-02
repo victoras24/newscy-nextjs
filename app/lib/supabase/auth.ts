@@ -25,7 +25,9 @@ export const signUpNewUser = async (formData: FormData) => {
 	if (data) {
 		revalidatePath("/");
 		console.log(data);
-	} else if (error) {
+	}
+	if (error) {
+		console.log(error.message);
 		console.log(error);
 	}
 };
