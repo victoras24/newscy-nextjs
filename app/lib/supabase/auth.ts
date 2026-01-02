@@ -12,8 +12,7 @@ export const signUpNewUser = async (formData: FormData) => {
 
 	console.log(rawFormData);
 
-	// data returned is { user: null, session: null } and no error, the post req is 200 ok. Further inv on what is wrong,
-	// probably something with the table setup in supabase.
+	// did a mistake where i was doing if else error after the (data), in that way i never got the error
 	const { data, error } = await supabaseClient.auth.signUp({
 		email: rawFormData.email as string,
 		password: rawFormData.password as string,
