@@ -35,8 +35,8 @@ export const signInWithEmail = async (formData: FormData) => {
 	"use server";
 
 	const rawFormData = {
-		email: formData.get("emailId"),
-		password: formData.get("passwordId"),
+		email: formData.get("email"),
+		password: formData.get("password"),
 	};
 
 	const { data, error } = await supabaseClient.auth.signInWithPassword({
@@ -47,7 +47,8 @@ export const signInWithEmail = async (formData: FormData) => {
 	if (data) {
 		revalidatePath("/");
 		console.log(data);
-	} else if (error) {
-		console.log(error);
+	}
+	if (error) {
+		console.log(error.message);
 	}
 };
