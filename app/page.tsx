@@ -3,12 +3,16 @@ import NewsCard from "./components/NewsCard";
 import { LoadMore } from "./components/LoadMore";
 import { SignupForm } from "./components/SignUpForm";
 import { LoginForm } from "./components/LoginForm";
+import { getUser } from "./lib/supabase/auth";
+import { SignOut } from "./components/SignOut";
 
 const News: React.FC<{
 	categoryFilter: string;
 	login: boolean;
-}> = ({ categoryFilter, login }) => {
+}> = async ({ categoryFilter, login }) => {
 	const PAGE_SIZE = 10;
+	const user = await getUser();
+	console.log(user);
 
 	async function LoadNews() {
 		const { data } = categoryFilter
@@ -50,7 +54,16 @@ const News: React.FC<{
 					{LoadNews()} {!categoryFilter && <LoadMore pageSize={PAGE_SIZE} />}
 				</div>
 				<div className="md:col-span-4">
-					{login ? <LoginForm /> : <SignupForm />}
+					{user ? (
+						<div>
+							<p>{user.email}</p>
+							<SignOut />
+						</div>
+					) : login ? (
+						<LoginForm />
+					) : (
+						<SignupForm />
+					)}
 				</div>
 			</div>
 		</>
