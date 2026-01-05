@@ -1,4 +1,4 @@
-import { signInWithEmail } from "../lib/supabase/auth";
+import { signInWithEmail } from "../lib/supabase/actions/auth";
 import { cn } from "../lib/utils";
 import {
 	Card,

@@ -1,13 +1,11 @@
-"use client";
-
-import { signOut } from "../lib/supabase/auth";
+import { signOut } from "../lib/supabase/actions/auth";
 
 export const SignOut = () => {
 	return (
 		<button
 			onClick={async () => {
 				await signOut();
-				window.location.reload(); // Refresh to show updated auth state
+				window.location.reload();
 			}}
 		>
 			Sign out

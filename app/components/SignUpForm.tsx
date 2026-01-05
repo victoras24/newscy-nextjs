@@ -1,6 +1,6 @@
 "use server";
 
-import { signUpNewUser } from "../lib/supabase/auth";
+import { signUpNewUser } from "../lib/supabase/actions/auth";
 import {
 	Card,
 	CardContent,
