@@ -1,3 +1,5 @@
+"use client";
+
 import { signOut } from "../lib/supabase/actions/auth";
 
 export const SignOut = () => {
