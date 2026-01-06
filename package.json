@@ -13,6 +13,7 @@
 		"@perplexity-ai/perplexity_ai": "^0.16.0",
 		"@supabase/ssr": "^0.8.0",
 		"@supabase/supabase-js": "^2.86.0",
+		"@tanstack/react-table": "^8.21.3",
 		"@xdevplatform/xdk": "^0.3.0",
 		"base-ui": "^0.0.294",
 		"class-variance-authority": "^0.7.1",
