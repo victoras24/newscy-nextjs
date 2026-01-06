@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "../server";
+import { redirect } from "next/navigation";
 
 export const signUpNewUser = async (formData: FormData) => {
 	var supabaseServerClient = await createClient();
@@ -47,10 +48,40 @@ export const signInWithEmail = async (formData: FormData) => {
 		revalidatePath("/");
 		console.log(data);
 	}
+
 	if (error) {
 		console.log(error.message);
 	}
 };
+
+export async function signInWithGoogleAuth() {
+	let route;
+
+	const env = process.env.NODE_ENV;
+
+	if (env == "development") {
+		route = process.env.NEXT_LOCAL_ROUTE;
+	} else if (env == "production") {
+		route = process.env.NEXT_BASE_ROUTE;
+	}
+
+	var supabaseServerClient = await createClient();
+
+	const { data, error } = await supabaseServerClient.auth.signInWithOAuth({
+		provider: "google",
+		options: {
+			redirectTo: `${route}/auth/callback`,
+		},
+	});
+
+	if (data.url) {
+		redirect(data.url);
+	}
+
+	if (error) {
+		console.log(error);
+	}
+}
 
 export async function signOut() {
 	var supabaseServerClient = await createClient();
