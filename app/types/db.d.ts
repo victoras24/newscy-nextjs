@@ -22,3 +22,11 @@ export interface ArticleImage {
 	alt: string;
 	large_img_url: string;
 }
+
+export interface SavedArticle {
+	id: string;
+	rewritten_title: string;
+	url: string;
+	category: string;
+	image_url: string;
+}
