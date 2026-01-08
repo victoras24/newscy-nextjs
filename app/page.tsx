@@ -47,6 +47,35 @@ const News: React.FC<{
 		}
 	}
 
+	async function LoadSavedArticles() {
+		let savedArticles: any[] = [];
+		if (user) {
+			const { data } = await supabaseClient
+				.from("saved")
+				.select("*")
+				.eq("userId", user.sub);
+			if (data)
+				for (const savedArticle of data) {
+					let { data } = await supabaseClient
+						.from("articles")
+						.select("*")
+						.eq("id", savedArticle.articleId);
+					if (data !== null) {
+						savedArticles.push(data);
+					}
+				}
+
+			console.log(savedArticles);
+
+			if (savedArticles.length > 0) {
+				savedArticles.map((article) => {
+					if (article) return <div>{article.summary}</div>;
+				});
+			}
+		}
+		return <div></div>;
+	}
+
 	return (
 		<>
 			<div className="grid grid-cols-1 md:grid-cols-12 md:gap-4 ">
@@ -56,6 +85,7 @@ const News: React.FC<{
 				<div className="md:col-span-4">
 					{user ? (
 						<div>
+							{LoadSavedArticles()}
 							<p>{user.email}</p>
 							<SignOut />
 						</div>

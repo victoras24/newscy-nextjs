@@ -25,8 +25,6 @@ export interface ArticleImage {
 
 export interface SavedArticle {
 	id: string;
-	rewritten_title: string;
-	url: string;
-	category: string;
-	image_url: string;
+	userId: string;
+	articleId: string;
 }
