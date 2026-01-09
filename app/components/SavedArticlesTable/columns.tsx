@@ -1,18 +1,41 @@
 "use client";
 
-import { SavedArticle } from "@/app/types/db";
+import { Article } from "@/app/types/db";
 import { ColumnDef } from "@tanstack/react-table";
+import { useRouter } from "next/navigation";
+import { DataTable } from "./data-table";
 
-// This type is used to define the shape of our data.
-// You can use a Zod schema here if you want.
+interface DataTableProps {
+  data: Article[];
+}
 
-export const columns: ColumnDef<SavedArticle>[] = [
-	{
-		accessorKey: "rewritten_title",
-		header: "Rewritten Title",
-	},
-	{
-		accessorKey: "category",
-		header: "Category",
-	},
-];
+export const ArticlesTable: React.FC<DataTableProps> = ({ data }) => {
+  const router = useRouter();
+
+  const columns: ColumnDef<Article>[] = [
+    {
+      accessorKey: "rewritten_title",
+      header: "Rewritten Title",
+      cell: ({ row }) => (
+        <div
+          className="cursor-pointer hover:underline text-blue-600"
+          onClick={() => router.push(`/article/${row.original.id}`)}
+        >
+          {row.original.rewritten_title}
+        </div>
+      ),
+    },
+    {
+      accessorKey: "category",
+      header: "Category",
+    },
+  ];
+
+  return (
+    <div className="space-y-2">
+	  <h2 className="text-2xl font-semibold">Saved Articles</h2>
+      <p className="text-sm text-gray-500">Click a title to view the full article</p>
+      <DataTable columns={columns} data={data} />
+    </div>
+  );
+};

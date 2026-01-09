@@ -14,6 +14,7 @@ import {
 	TableHeader,
 	TableRow,
 } from "../table";
+import Link from "next/link";
 
 interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[];
@@ -53,18 +54,21 @@ export function DataTable<TData, TValue>({
 				</TableHeader>
 				<TableBody>
 					{table.getRowModel().rows?.length ? (
-						table.getRowModel().rows.map((row) => (
+						table.getRowModel().rows.map((row) => {
+							return (
 							<TableRow
 								key={row.id}
 								data-state={row.getIsSelected() && "selected"}
 							>
-								{row.getVisibleCells().map((cell) => (
-									<TableCell key={cell.id}>
-										{flexRender(cell.column.columnDef.cell, cell.getContext())}
-									</TableCell>
-								))}
+								{row.getVisibleCells().map((cell: any) => {
+									console.log(cell.column.columnDef.cell)
+									return (
+										<TableCell  key={cell.id}>
+											{flexRender(cell.column.columnDef.cell, cell.getContext())}
+										</TableCell>
+								)})}
 							</TableRow>
-						))
+						)})
 					) : (
 						<TableRow>
 							<TableCell colSpan={columns.length} className="h-24 text-center">

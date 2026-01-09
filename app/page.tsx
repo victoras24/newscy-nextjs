@@ -5,8 +5,7 @@ import { SignupForm } from "./components/SignUpForm";
 import { LoginForm } from "./components/LoginForm";
 import { getUser } from "./lib/supabase/auth";
 import { SignOut } from "./components/SignOut";
-import { ReactNode } from "react";
-import { Article } from "./types/db";
+import { ArticlesTable } from "./components/SavedArticlesTable/columns";
 
 const News: React.FC<{
 	categoryFilter: string;
@@ -66,29 +65,23 @@ const News: React.FC<{
 			`)
 			.eq("userId", user.sub);
 
+		if (data) {
+			return data;
+		}
+
 		if (error) {
 			console.error(error);
 			return null;
 		}
 
-		if (!data || data.length === 0) {
-			return <p>No saved articles</p>;
-		}
-
-		return (
-			<div>
-			{data.map(({ article }: any) => (
-				<div key={article.id}>
-				{article.rewritten_title}
-				</div>
-			))}
-			</div>
-		);
 	}
-
+	
 	const newsNode = await LoadNews();
-	const savedArticlesNode = await LoadSavedArticles();
-
+	const savedArticles = await LoadSavedArticles();
+	const cleanedSavedArticles = savedArticles?.map((article) => {
+		return article.article
+	})
+	
 	return (
 		<>
 			<div className="grid grid-cols-1 md:grid-cols-12 md:gap-4 ">
@@ -98,7 +91,7 @@ const News: React.FC<{
 				<div className="md:col-span-4">
 					{user ? (
 						<div>
-							{savedArticlesNode}
+							<ArticlesTable data={cleanedSavedArticles as any} />
 							<p>{user.email}</p>
 							<SignOut />
 						</div>
