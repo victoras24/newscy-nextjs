@@ -7,9 +7,10 @@ import { useRouter } from "next/navigation";
 interface BookmarkProps {
     userId: string;
     articleId: string;
+    isArticleSaved: boolean;
 }
 
-export const BookmarkComponent: React.FC<BookmarkProps> = ({userId, articleId}) => {
+export const BookmarkComponent: React.FC<BookmarkProps> = ({userId, articleId, isArticleSaved}) => {
     const [isSaved, setIsSaved] = useState<boolean>(false);
     const router = useRouter()
     
@@ -28,6 +29,6 @@ export const BookmarkComponent: React.FC<BookmarkProps> = ({userId, articleId}) 
 		}
 
     return <div>
-        {isSaved ? <Bookmark onClick={() => saveArticle(userId, articleId)} className="hover:cursor-pointer" fill="white"/> : <Bookmark onClick={() => saveArticle(userId, articleId)} className="hover:cursor-pointer"/>}
+        {isArticleSaved ? <Bookmark onClick={() => saveArticle(userId, articleId)} className="hover:cursor-pointer" fill="white"/> : <Bookmark onClick={() => saveArticle(userId, articleId)} className="hover:cursor-pointer"/>}
     </div>
 }

@@ -12,6 +12,7 @@ interface NewsCardProps {
 	date: string;
 	imageUrl: string;
 	userId: string;
+	isArticleSaved: boolean;
 }
 
 const NewsCard: React.FC<NewsCardProps> = ({
@@ -21,7 +22,8 @@ const NewsCard: React.FC<NewsCardProps> = ({
 	summary,
 	date,
 	imageUrl,
-	userId
+	userId,
+	isArticleSaved
 }) => {
 	
 	return (
@@ -35,7 +37,7 @@ const NewsCard: React.FC<NewsCardProps> = ({
 				<div className="flex flex-col justify-items-end items-end md:pl-4 leading-normal ">
 					<div className="flex items-center gap-2">
 						<Badge variant="secondary">{category}</Badge>
-						<BookmarkComponent userId={userId} articleId={id}/>
+						<BookmarkComponent userId={userId} articleId={id} isArticleSaved={isArticleSaved}/>
 					</div>	
 					<a
 						href={`/article/${id}`}
