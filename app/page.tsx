@@ -40,6 +40,7 @@ const News: React.FC<{
 								summary={article.summary}
 								date={article.date}
 								imageUrl={article.image_url}
+								userId={user?.sub}
 							/>
 						);
 					})}
@@ -90,10 +91,12 @@ const News: React.FC<{
 				</div>
 				<div className="md:col-span-4">
 					{user ? (
-						<div>
+						<div>					
+							<div className="flex gap-3">		
+								<p>{user.email}</p>
+								<SignOut />
+							</div>
 							<ArticlesTable data={cleanedSavedArticles as any} />
-							<p>{user.email}</p>
-							<SignOut />
 						</div>
 					) : login ? (
 						<LoginForm />

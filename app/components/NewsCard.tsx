@@ -1,6 +1,8 @@
+import { Bookmark, BookmarkCheck, BookMarked, Ellipsis, Icon } from "lucide-react";
 import "../style/_newsCard.scss";
 import { Badge } from "./badge";
 import { Card } from "./Card";
+import { BookmarkComponent } from "./bookmark";
 
 interface NewsCardProps {
 	id: string;
@@ -9,6 +11,7 @@ interface NewsCardProps {
 	summary: string;
 	date: string;
 	imageUrl: string;
+	userId: string;
 }
 
 const NewsCard: React.FC<NewsCardProps> = ({
@@ -18,7 +21,9 @@ const NewsCard: React.FC<NewsCardProps> = ({
 	summary,
 	date,
 	imageUrl,
+	userId
 }) => {
+	
 	return (
 		<Card>
 			<div className="flex justify-between items-center bg-neutral-primary-soft px-4 rounded-xl md:flex-row">
@@ -28,7 +33,10 @@ const NewsCard: React.FC<NewsCardProps> = ({
 					alt="Article image"
 				/>
 				<div className="flex flex-col justify-items-end items-end md:pl-4 leading-normal ">
-					<Badge variant="secondary">{category}</Badge>
+					<div className="flex items-center gap-2">
+						<Badge variant="secondary">{category}</Badge>
+						<BookmarkComponent userId={userId} articleId={id}/>
+					</div>	
 					<a
 						href={`/article/${id}`}
 						className="mb-2 text-lg font-medium text-end hover:cursor-pointer hover:underline underline-offset-2"

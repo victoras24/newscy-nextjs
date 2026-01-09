@@ -61,7 +61,6 @@ export function DataTable<TData, TValue>({
 								data-state={row.getIsSelected() && "selected"}
 							>
 								{row.getVisibleCells().map((cell: any) => {
-									console.log(cell.column.columnDef.cell)
 									return (
 										<TableCell  key={cell.id}>
 											{flexRender(cell.column.columnDef.cell, cell.getContext())}
