@@ -5,6 +5,8 @@ import { SignupForm } from "./components/SignUpForm";
 import { LoginForm } from "./components/LoginForm";
 import { getUser } from "./lib/supabase/auth";
 import { SignOut } from "./components/SignOut";
+import { ReactNode } from "react";
+import { Article } from "./types/db";
 
 const News: React.FC<{
 	categoryFilter: string;
@@ -48,44 +50,55 @@ const News: React.FC<{
 	}
 
 	async function LoadSavedArticles() {
-		let savedArticles: any[] = [];
-		if (user) {
-			const { data } = await supabaseClient
-				.from("saved")
-				.select("*")
-				.eq("userId", user.sub);
-			if (data)
-				for (const savedArticle of data) {
-					let { data } = await supabaseClient
-						.from("articles")
-						.select("*")
-						.eq("id", savedArticle.articleId);
-					if (data !== null) {
-						savedArticles.push(data);
-					}
-				}
+		if (!user) return null;
 
-			console.log(savedArticles);
+		const { data, error } = await supabaseClient
+			.from("saved")
+			.select(`
+			article:articles (
+				id,
+				rewritten_title,
+				category,
+				summary,
+				date,
+				image_url
+			)
+			`)
+			.eq("userId", user.sub);
 
-			if (savedArticles.length > 0) {
-				savedArticles.map((article) => {
-					if (article) return <div>{article.summary}</div>;
-				});
-			}
+		if (error) {
+			console.error(error);
+			return null;
 		}
-		return <div></div>;
+
+		if (!data || data.length === 0) {
+			return <p>No saved articles</p>;
+		}
+
+		return (
+			<div>
+			{data.map(({ article }: any) => (
+				<div key={article.id}>
+				{article.rewritten_title}
+				</div>
+			))}
+			</div>
+		);
 	}
+
+	const newsNode = await LoadNews();
+	const savedArticlesNode = await LoadSavedArticles();
 
 	return (
 		<>
 			<div className="grid grid-cols-1 md:grid-cols-12 md:gap-4 ">
 				<div className="md:col-span-8">
-					{LoadNews()} {!categoryFilter && <LoadMore pageSize={PAGE_SIZE} />}
+					{newsNode} {!categoryFilter && <LoadMore pageSize={PAGE_SIZE} />}
 				</div>
 				<div className="md:col-span-4">
 					{user ? (
 						<div>
-							{LoadSavedArticles()}
+							{savedArticlesNode}
 							<p>{user.email}</p>
 							<SignOut />
 						</div>
