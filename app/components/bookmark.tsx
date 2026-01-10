@@ -1,6 +1,6 @@
 "use client"
+
 import { Bookmark } from "lucide-react";
-import { useEffect, useState } from "react";
 import supabaseClient from "../lib/supabaseClient";
 import { useRouter } from "next/navigation";
 
@@ -11,7 +11,6 @@ interface BookmarkProps {
 }
 
 export const BookmarkComponent: React.FC<BookmarkProps> = ({userId, articleId, isArticleSaved}) => {
-    const [isSaved, setIsSaved] = useState<boolean>(false);
     const router = useRouter()
     
         async function saveArticle(userId: string, articleId: string) {
@@ -23,7 +22,7 @@ export const BookmarkComponent: React.FC<BookmarkProps> = ({userId, articleId, i
 						})
                         
             if (data.status === 201) {
-                setIsSaved(true)
+
                 router.refresh()
             }
 		}
@@ -44,7 +43,13 @@ export const BookmarkComponent: React.FC<BookmarkProps> = ({userId, articleId, i
 
         };
 
-    return <div>
-        {isArticleSaved ? <Bookmark onClick={() => unsaveArticle(userId, articleId)} className="hover:cursor-pointer" fill="white"/> : <Bookmark onClick={() => saveArticle(userId, articleId)} className="hover:cursor-pointer"/>}
+    return ( 
+    <div>
+        {
+            isArticleSaved ? 
+            <Bookmark onClick={() => unsaveArticle(userId, articleId)} className="hover:cursor-pointer" fill="#16A34A"/> : 
+            <Bookmark onClick={() => saveArticle(userId, articleId)} className="hover:cursor-pointer"/>
+        }
     </div>
+    )
 }

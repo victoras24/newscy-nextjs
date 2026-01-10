@@ -5,12 +5,15 @@ import { ColumnDef } from "@tanstack/react-table";
 import { useRouter } from "next/navigation";
 import { DataTable } from "./data-table";
 import { Ellipsis } from "lucide-react";
+import { useState } from "react";
+import { ActionDropdown } from "../actionDropdown";
 
 interface DataTableProps {
   data: Article[];
 }
 
 export const ArticlesTable: React.FC<DataTableProps> = ({ data }) => {
+  const [isActionOpen, setIsActionOpen] = useState<boolean>(false);
   const router = useRouter();
 
   const columns: ColumnDef<Article>[] = [
@@ -33,9 +36,10 @@ export const ArticlesTable: React.FC<DataTableProps> = ({ data }) => {
 	{
 		accessorKey: "actions",
 		header: "Actions",
-		cell: ({row}) => 
+		cell: () => 
 			<div className="flex items-center justify-center hover: cursor-pointer">
-				<Ellipsis onClick={() => console.log("dropdown with actions")}/>
+				<Ellipsis onClick={() => setIsActionOpen(prev => !prev)}/>
+        {isActionOpen && <ActionDropdown />}
 			</div>
 		
 	}

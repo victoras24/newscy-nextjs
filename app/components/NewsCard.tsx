@@ -1,4 +1,3 @@
-import { Bookmark, BookmarkCheck, BookMarked, Ellipsis, Icon } from "lucide-react";
 import "../style/_newsCard.scss";
 import { Badge } from "./badge";
 import { Card } from "./Card";
@@ -25,7 +24,7 @@ const NewsCard: React.FC<NewsCardProps> = ({
 	userId,
 	isArticleSaved
 }) => {
-	
+
 	return (
 		<Card>
 			<div className="flex justify-between items-center bg-neutral-primary-soft px-4 rounded-xl md:flex-row">
