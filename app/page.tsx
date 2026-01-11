@@ -17,11 +17,12 @@ const News: React.FC<{
 	console.log(user);
 
 	async function LoadSavedArticles() {
-  if (!user) return null;
+		if (!user) return null;
 
-  const { data, error } = await supabaseClient
-    .from("saved")
-    .select(`
+		const { data, error } = await supabaseClient
+			.from("saved")
+			.select(
+				`
       article:articles (
         id,
         rewritten_title,
@@ -30,58 +31,59 @@ const News: React.FC<{
         date,
         image_url
       )
-    `)
-    .eq("userId", user.sub);
+    `
+			)
+			.eq("userId", user.sub);
 
-  if (error) console.error(error);
+		if (error) console.error(error);
 
-  return data ?? null;
-}
+		return data ?? null;
+	}
 
+	const savedArticles = await LoadSavedArticles();
+	const cleanedSavedArticles = savedArticles?.map((item) => item.article);
 
-const savedArticles = await LoadSavedArticles();
-const cleanedSavedArticles = savedArticles?.map((item) => item.article);
+	const isArticleSaved = (articleId: string) => {
+		return (
+			cleanedSavedArticles?.some((article: any) => article.id === articleId) ??
+			false
+		);
+	};
 
+	async function LoadNews() {
+		const { data } = categoryFilter
+			? await supabaseClient
+					.from("articles")
+					.select("*")
+					.like("category", `%${categoryFilter}%`)
+			: await supabaseClient
+					.from("articles")
+					.select("*")
+					.range(0, PAGE_SIZE - 1)
+					.order("date", { ascending: false });
 
-const isArticleSaved = (articleId: string) => {
-  return cleanedSavedArticles?.some((article: any) => article.id === articleId) ?? false;
-};
+		if (!data) return null;
 
-async function LoadNews() {
-  const { data } = categoryFilter
-    ? await supabaseClient
-        .from("articles")
-        .select("*")
-        .like("category", `%${categoryFilter}%`)
-    : await supabaseClient
-        .from("articles")
-        .select("*")
-        .range(0, PAGE_SIZE - 1)
-        .order("date", { ascending: false });
+		return (
+			<div>
+				{data.map((article, index) => (
+					<NewsCard
+						key={index}
+						id={article.id}
+						category={article.category}
+						rewritten_title={article.rewritten_title}
+						summary={article.summary}
+						date={article.date}
+						imageUrl={article.image_url}
+						userId={user?.sub}
+						isArticleSaved={isArticleSaved(article.id)}
+					/>
+				))}
+			</div>
+		);
+	}
 
-  if (!data) return null;
-
-  return (
-    <div>
-      {data.map((article, index) => (
-        <NewsCard
-          key={index}
-          id={article.id}
-          category={article.category}
-          rewritten_title={article.rewritten_title}
-          summary={article.summary}
-          date={article.date}
-          imageUrl={article.image_url}
-          userId={user?.sub}
-          isArticleSaved={isArticleSaved(article.id)} 
-        />
-      ))}
-    </div>
-  );
-}
-
-
-const newsNode = await LoadNews();
+	const newsNode = await LoadNews();
 
 	return (
 		<>
@@ -91,9 +93,12 @@ const newsNode = await LoadNews();
 				</div>
 				<div className="md:col-span-4">
 					{user ? (
-						<div>					
-							<div className="flex gap-3">	
-                <AvatarComponent image={user.imageUrl} fallback={user.email.charAt(0).toUpperCase()} />	
+						<div>
+							<div className="flex gap-3 items-center">
+								<AvatarComponent
+									image={user.imageUrl}
+									fallback={user.email.charAt(0).toUpperCase()}
+								/>
 								<p>{user.email}</p>
 								<SignOut />
 							</div>
