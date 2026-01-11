@@ -6,7 +6,7 @@ import { LoginForm } from "./components/LoginForm";
 import { getUser } from "./lib/supabase/auth";
 import { SignOut } from "./components/SignOut";
 import { ArticlesTable } from "./components/SavedArticlesTable/columns";
-import { Article } from "./types/db";
+import { AvatarComponent } from "./components/AvatarComponent";
 
 const News: React.FC<{
 	categoryFilter: string;
@@ -15,8 +15,6 @@ const News: React.FC<{
 	const PAGE_SIZE = 10;
 	const user = await getUser();
 	console.log(user);
-
-	
 
 	async function LoadSavedArticles() {
   if (!user) return null;
@@ -94,7 +92,8 @@ const newsNode = await LoadNews();
 				<div className="md:col-span-4">
 					{user ? (
 						<div>					
-							<div className="flex gap-3">		
+							<div className="flex gap-3">	
+                <AvatarComponent image={user.imageUrl} fallback={user.email.charAt(0).toUpperCase()} />	
 								<p>{user.email}</p>
 								<SignOut />
 							</div>
