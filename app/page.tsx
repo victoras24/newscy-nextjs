@@ -35,7 +35,7 @@ const News: React.FC<{
 			)
 			.eq("userId", user.sub);
 
-		if (error) console.error(error);
+		if (error) console.log(error);
 
 		return data ?? null;
 	}

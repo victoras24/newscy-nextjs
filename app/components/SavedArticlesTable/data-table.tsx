@@ -14,7 +14,6 @@ import {
 	TableHeader,
 	TableRow,
 } from "../table";
-import Link from "next/link";
 
 interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[];
@@ -23,13 +22,15 @@ interface DataTableProps<TData, TValue> {
 
 export function DataTable<TData, TValue>({
 	columns,
-	data,
+	data = [],
 }: DataTableProps<TData, TValue>) {
 	const table = useReactTable({
 		data,
 		columns,
 		getCoreRowModel: getCoreRowModel(),
 	});
+
+	const rows = table.getRowModel().rows;
 
 	return (
 		<div className="overflow-hidden rounded-md border">
@@ -53,25 +54,30 @@ export function DataTable<TData, TValue>({
 					))}
 				</TableHeader>
 				<TableBody>
-					{table.getRowModel().rows?.length ? (
-						table.getRowModel().rows.map((row) => {
+					{rows.length ? (
+						rows.map((row) => {
 							return (
-							<TableRow
-								key={row.id}
-								data-state={row.getIsSelected() && "selected"}
-							>
-								{row.getVisibleCells().map((cell: any) => {
-									return (
-										<TableCell  key={cell.id}>
-											{flexRender(cell.column.columnDef.cell, cell.getContext())}
-										</TableCell>
-								)})}
-							</TableRow>
-						)})
+								<TableRow
+									key={row.id}
+									data-state={row.getIsSelected() && "selected"}
+								>
+									{row.getVisibleCells().map((cell: any) => {
+										return (
+											<TableCell key={cell.id}>
+												{flexRender(
+													cell.column.columnDef.cell,
+													cell.getContext()
+												)}
+											</TableCell>
+										);
+									})}
+								</TableRow>
+							);
+						})
 					) : (
 						<TableRow>
 							<TableCell colSpan={columns.length} className="h-24 text-center">
-								No results.
+								No articles saved.
 							</TableCell>
 						</TableRow>
 					)}
