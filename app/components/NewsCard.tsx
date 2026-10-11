@@ -10,8 +10,8 @@ interface NewsCardProps {
 	summary: string;
 	date: string;
 	imageUrl: string;
-	userId: string;
-	isArticleSaved: boolean;
+	userId?: string;
+	isArticleSaved?: boolean;
 }
 
 const NewsCard: React.FC<NewsCardProps> = ({
@@ -22,7 +22,7 @@ const NewsCard: React.FC<NewsCardProps> = ({
 	date,
 	imageUrl,
 	userId,
-	isArticleSaved
+	isArticleSaved = false
 }) => {
 
 	return (

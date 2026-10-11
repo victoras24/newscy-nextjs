@@ -6,7 +6,7 @@ const CategoryPage = async ({
 	params: Promise<{ category: string }>;
 }) => {
 	const { category } = await params;
-	return <News categoryFilter={category} login={false} />;
+	return <News categoryFilter={decodeURIComponent(category)} login={false} />;
 };
 
 export default CategoryPage;

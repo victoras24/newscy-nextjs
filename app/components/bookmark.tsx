@@ -5,7 +5,7 @@ import supabaseClient from "../lib/supabaseClient";
 import { useRouter } from "next/navigation";
 
 interface BookmarkProps {
-    userId: string;
+    userId?: string;
     articleId: string;
     isArticleSaved: boolean;
 }
@@ -13,22 +13,30 @@ interface BookmarkProps {
 export const BookmarkComponent: React.FC<BookmarkProps> = ({userId, articleId, isArticleSaved}) => {
     const router = useRouter()
     
-        async function saveArticle(userId: string, articleId: string) {
-			const data = await supabaseClient
+        async function saveArticle(articleId: string) {
+            if (!userId) {
+                router.push("/login")
+                return
+            }
+
+			const { error } = await supabaseClient
 						.from("saved")
 						.insert({
 							userId,
 							articleId
 						})
-                        
-            if (data.status === 201) {
 
+            if (error) {
+                console.error("Failed to save:", error);
+            } else {
                 router.refresh()
             }
 		}
 
-        async function unsaveArticle(userId: string, articleId: string) {
-        const { data, error } = await supabaseClient
+        async function unsaveArticle(articleId: string) {
+        if (!userId) return
+
+        const { error } = await supabaseClient
             .from("saved")
             .delete()
             .eq("userId", userId)
@@ -38,7 +46,6 @@ export const BookmarkComponent: React.FC<BookmarkProps> = ({userId, articleId, i
             console.error("Failed to delete:", error);
         } else {
             router.refresh()
-            console.log("Deleted successfully:", data);
         }
 
         };
@@ -47,8 +54,8 @@ export const BookmarkComponent: React.FC<BookmarkProps> = ({userId, articleId, i
     <div>
         {
             isArticleSaved ? 
-            <Bookmark onClick={() => unsaveArticle(userId, articleId)} className="hover:cursor-pointer" fill="#16A34A"/> : 
-            <Bookmark onClick={() => saveArticle(userId, articleId)} className="hover:cursor-pointer"/>
+            <Bookmark onClick={() => unsaveArticle(articleId)} className="hover:cursor-pointer" fill="#16A34A"/> : 
+            <Bookmark onClick={() => saveArticle(articleId)} className="hover:cursor-pointer"/>
         }
     </div>
     )

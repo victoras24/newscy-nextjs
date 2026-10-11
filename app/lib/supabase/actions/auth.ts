@@ -4,68 +4,69 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "../server";
 import { redirect } from "next/navigation";
 
+const getBaseRoute = () => {
+	return process.env.NODE_ENV === "development"
+		? process.env.NEXT_LOCAL_ROUTE
+		: process.env.NEXT_BASE_ROUTE;
+};
+
 export const signUpNewUser = async (formData: FormData) => {
-	var supabaseServerClient = await createClient();
+	const supabaseServerClient = await createClient();
 
 	const rawFormData = {
+		name: formData.get("name"),
 		email: formData.get("email"),
 		password: formData.get("password"),
+		confirmPassword: formData.get("confirm-password"),
 	};
 
-	console.log(rawFormData);
+	if (rawFormData.password !== rawFormData.confirmPassword) {
+		console.log("Passwords do not match");
+		return;
+	}
 
-	const { data, error } = await supabaseServerClient.auth.signUp({
+	const { error } = await supabaseServerClient.auth.signUp({
 		email: rawFormData.email as string,
 		password: rawFormData.password as string,
 		options: {
-			emailRedirectTo: "/",
+			emailRedirectTo: `${getBaseRoute()}/auth/callback`,
+			data: { full_name: rawFormData.name as string },
 		},
 	});
 
-	if (data) {
-		revalidatePath("/");
-		console.log(data);
-	}
 	if (error) {
 		console.log(error.message);
-		console.log(error);
+		return;
 	}
+
+	revalidatePath("/");
 };
 
 export const signInWithEmail = async (formData: FormData) => {
-	var supabaseServerClient = await createClient();
+	const supabaseServerClient = await createClient();
 	const rawFormData = {
 		email: formData.get("email"),
 		password: formData.get("password"),
 	};
 
-	const { data, error } = await supabaseServerClient.auth.signInWithPassword({
+	const { error } = await supabaseServerClient.auth.signInWithPassword({
 		email: rawFormData.email as string,
 		password: rawFormData.password as string,
 	});
 
-	if (data) {
-		revalidatePath("/");
-		console.log(data);
-	}
-
 	if (error) {
 		console.log(error.message);
+		return;
 	}
+
+	revalidatePath("/");
+	redirect("/");
 };
 
 export async function signInWithGoogleAuth() {
-	let route;
+	const route = getBaseRoute();
 
-	const env = process.env.NODE_ENV;
-
-	if (env == "development") {
-		route = process.env.NEXT_LOCAL_ROUTE;
-	} else if (env == "production") {
-		route = process.env.NEXT_BASE_ROUTE;
-	}
-
-	var supabaseServerClient = await createClient();
+	const supabaseServerClient = await createClient();
 
 	const { data, error } = await supabaseServerClient.auth.signInWithOAuth({
 		provider: "google",
@@ -74,17 +75,18 @@ export async function signInWithGoogleAuth() {
 		},
 	});
 
-	if (data.url) {
-		redirect(data.url);
-	}
-
 	if (error) {
 		console.log(error);
+		return;
+	}
+
+	if (data.url) {
+		redirect(data.url);
 	}
 }
 
 export async function signOut() {
-	var supabaseServerClient = await createClient();
+	const supabaseServerClient = await createClient();
 	const { error } = await supabaseServerClient.auth.signOut();
 
 	if (error) {

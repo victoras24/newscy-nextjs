@@ -4,7 +4,7 @@ type coordination = {
 };
 
 export const getLatLon = () => {
-	let coordinations: coordination = {} as coordination;
+	const coordinations: coordination = {} as coordination;
 	if ("geolocation" in navigator) {
 		navigator.geolocation.getCurrentPosition(
 			(success) => {

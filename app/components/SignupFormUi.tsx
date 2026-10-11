@@ -11,8 +11,7 @@ import {
 import { Field, FieldGroup, FieldLabel } from "./field";
 import { Input } from "./input";
 
-export default function SignupFormUI(props: any) {
-	console.log(props);
+export default function SignupFormUI(props: React.ComponentProps<"div">) {
 	return (
 		<Card {...props}>
 			<CardHeader>

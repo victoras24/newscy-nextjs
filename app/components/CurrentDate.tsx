@@ -5,6 +5,7 @@ const CurrentDate: React.FC = () => {
 		weekday: "long",
 		month: "long",
 		day: "numeric",
+		timeZone: "Asia/Nicosia",
 	}).format(today);
 
 	return <span>{formattedDate}</span>;

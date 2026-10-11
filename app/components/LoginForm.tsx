@@ -1,3 +1,4 @@
+import Link from "next/link";
 import {
 	signInWithEmail,
 	signInWithGoogleAuth,
@@ -68,13 +69,14 @@ export function LoginForm({
 									</button>
 									<button
 										className="h-8 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2 border-border bg-background hover:bg-muted hover:text-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 aria-expanded:bg-muted aria-expanded:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 rounded-none border border-transparent bg-clip-padding text-xs font-medium focus-visible:ring-1 aria-invalid:ring-1 [&_svg:not([class*='size-'])]:size-4 inline-flex items-center justify-center whitespace-nowrap transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none shrink-0 [&_svg]:shrink-0 outline-none group/button select-none hover:cursor-pointer"
-										type="button"
-										onClick={signInWithGoogleAuth}
+										type="submit"
+										formAction={signInWithGoogleAuth}
+										formNoValidate
 									>
 										Login with Google
 									</button>
 									<p className="text-center text-muted-foreground text-left text-xs/relaxed [[data-variant=legend]+&]:-mt-1.5 leading-normal font-normal group-has-[[data-orientation=horizontal]]/field:text-balance px-6 text-center">
-										Don't have an account? <a href="/">Sign up</a>
+										Don&apos;t have an account? <Link href="/">Sign up</Link>
 									</p>
 								</div>
 							</div>

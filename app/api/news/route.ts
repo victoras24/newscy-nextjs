@@ -3,6 +3,10 @@ import Perplexity from "@perplexity-ai/perplexity_ai";
 import supabaseClient from "@/app/lib/supabaseClient";
 import getImageByKeyWords from "@/app/lib/pexelClient";
 import xClient from "@/app/lib/xClient";
+import { Article } from "@/app/types/db";
+
+const POLICE_IMAGE_URL =
+	"https://www.police.gov.cy/police/police.nsf/2E3264317874994BC2258608003B74F9/$file/IMG_0115b.jpg";
 
 export async function GET() {
 	const client = new Perplexity({
@@ -17,7 +21,6 @@ For each article:
 - Write a 1-2 sentence summary
 - Provide the original source URL
 - Categorize the story using exactly ONE word only (no slashes, no hyphens, no compound terms)
-- Categorize the story
 - Identify the source publication
 - Generate image search keywords (3-5 words that would find a relevant photo)
 - Generate Full Article
@@ -113,17 +116,22 @@ Focus on the main subject, location, and action.`,
 			const articlesArray = JSON.parse(articles);
 
 			for (const article of articlesArray) {
-				const image = await getImageByKeyWords(article.image_search_query);
 				if (article.rewritten_title?.toLowerCase().includes("police")) {
-					article.image_url =
-						"https://www.police.gov.cy/police/police.nsf/2E3264317874994BC2258608003B74F9/$file/IMG_0115b.jpg";
-				} else if (image) {
+					article.image_id = null;
+					article.image_url = POLICE_IMAGE_URL;
+					article.large_img_url = POLICE_IMAGE_URL;
+					continue;
+				}
+
+				const image = await getImageByKeyWords(article.image_search_query);
+				if (image) {
 					article.image_id = image.id;
 					article.image_url = image.url;
 					article.large_img_url = image.large_img_url;
 				} else {
 					article.image_id = null;
 					article.image_url = null;
+					article.large_img_url = null;
 				}
 			}
 
@@ -132,35 +140,50 @@ Focus on the main subject, location, and action.`,
 				.insert(articlesArray)
 				.select();
 
-			if (data) {
-				await tweetArticle(data, tweetClient);
-				await fbPostArticle(data);
-				return NextResponse.json({
-					success: true,
-					articles: articlesArray,
-					data: data,
-				});
-			} else if (error) {
-				return Response.json({
-					success: false,
-					message: error.message,
-					cause: error.cause,
-					code: error.code,
-				});
+			if (error || !data) {
+				return NextResponse.json(
+					{
+						success: false,
+						message: error?.message ?? "No articles were inserted",
+						code: error?.code,
+					},
+					{ status: 500 }
+				);
 			}
+
+			// the articles are already stored, so a failed social post should not fail the request
+			try {
+				await tweetArticle(data, tweetClient);
+			} catch (error) {
+				console.error("Tweet error:", error);
+			}
+			try {
+				await fbPostArticle(data);
+			} catch (error) {
+				console.error("Facebook post error:", error);
+			}
+
+			return NextResponse.json({
+				success: true,
+				articles: articlesArray,
+				data: data,
+			});
 		} else {
-			return NextResponse.json({ message: "its not string" }); // need to think how to handle it.
+			return NextResponse.json(
+				{ message: "its not string" }, // need to think how to handle it.
+				{ status: 502 }
+			);
 		}
-	} catch (error: any) {
+	} catch (error) {
 		return NextResponse.json(
-			{ error: error.message || "Unknown error" },
+			{ error: error instanceof Error ? error.message : "Unknown error" },
 			{ status: 500 }
 		);
 	}
 }
 
 const tweetArticle = async (
-	data: any[],
+	data: Article[],
 	tweetClient: Awaited<ReturnType<typeof xClient>>
 ) => {
 	for (const article of data) {
@@ -170,7 +193,7 @@ const tweetArticle = async (
 	}
 };
 
-const fbPostArticle = async (data: any[]) => {
+const fbPostArticle = async (data: Article[]) => {
 	for (const article of data) {
 		const message = encodeURIComponent(article.rewritten_title);
 		const link = encodeURIComponent(

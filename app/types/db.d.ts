@@ -1,3 +1,7 @@
+import { ApiRoute } from "../../../../auto-type/src/apiRoute";
+
+const apiRoute = new ApiRoute();
+console.log(apiRoute.getEndpoints());
 export interface Article {
 	original_title: string;
 	rewritten_title: string;

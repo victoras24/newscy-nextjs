@@ -34,10 +34,10 @@ export const ArticlesTable: React.FC<DataTableProps> = ({ data }) => {
       header: "Category",
     },
 	{
-		accessorKey: "actions",
+		id: "actions",
 		header: "Actions",
 		cell: () => 
-			<div className="flex items-center justify-center hover: cursor-pointer">
+			<div className="flex items-center justify-center hover:cursor-pointer">
 				<Ellipsis onClick={() => setIsActionOpen(prev => !prev)}/>
         {isActionOpen && <ActionDropdown />}
 			</div>

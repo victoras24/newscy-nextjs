@@ -1,5 +1,6 @@
 import supabaseClient from "@/app/lib/supabaseClient";
 import { Metadata } from "next";
+import fallbackNews from "@/app/data/fallbackNews.json";
 
 type Props = {
 	params: Promise<{ article: string }>;
@@ -7,11 +8,12 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
 	const { article } = await params;
-	const { data } = await supabaseClient
+	const { data: dbArticle } = await supabaseClient
 		.from("articles")
 		.select("*")
 		.eq("id", article)
 		.single();
+	const data = dbArticle ?? fallbackNews.find(({ id }) => id === article);
 
 	if (!data) {
 		return {
@@ -33,7 +35,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 					alt: data.rewritten_title,
 				},
 			],
-			url: `${process.env.NEXT_BASE_ROUTE}/articles/${data.id}`,
+			url: `${process.env.NEXT_BASE_ROUTE}/article/${data.id}`,
 			type: "article",
 		},
 		twitter: {
@@ -47,11 +49,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 const Article = async ({ params }: Props) => {
 	const { article } = await params;
-	const { data } = await supabaseClient
+	const { data: dbArticle } = await supabaseClient
 		.from("articles")
 		.select("*")
 		.eq("id", article)
 		.single();
+	const data = dbArticle ?? fallbackNews.find(({ id }) => id === article);
 
 	if (!data) {
 		return <div>Article not found</div>;

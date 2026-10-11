@@ -14,8 +14,9 @@ import {
 	WiThunderstorm,
 	WiStormShowers,
 } from "react-icons/wi";
+import { IconType } from "react-icons";
 
-export const weatherIcons: any = {
+export const weatherIcons: Record<number, IconType> = {
 	0: WiDaySunny,
 
 	1: WiDayCloudy,

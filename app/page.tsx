@@ -7,6 +7,8 @@ import { getUser } from "./lib/supabase/auth";
 import { SignOut } from "./components/SignOut";
 import { ArticlesTable } from "./components/SavedArticlesTable/columns";
 import { AvatarComponent } from "./components/AvatarComponent";
+import fallbackNews from "./data/fallbackNews.json";
+import { Article } from "./types/db";
 
 const News: React.FC<{
 	categoryFilter: string;
@@ -14,7 +16,6 @@ const News: React.FC<{
 }> = async ({ categoryFilter, login }) => {
 	const PAGE_SIZE = 10;
 	const user = await getUser();
-	console.log(user);
 
 	async function LoadSavedArticles() {
 		if (!user) return null;
@@ -41,13 +42,14 @@ const News: React.FC<{
 	}
 
 	const savedArticles = await LoadSavedArticles();
-	const cleanedSavedArticles = savedArticles?.map((item) => item.article);
+	// a saved row whose article was deleted comes back with a null article
+	const cleanedSavedArticles = (savedArticles ?? [])
+		.map((item) => item.article as unknown as Article | null)
+		.filter((article): article is Article => article !== null);
+	const savedArticleIds = cleanedSavedArticles.map((article) => article.id);
 
 	const isArticleSaved = (articleId: string) => {
-		return (
-			cleanedSavedArticles?.some((article: any) => article.id === articleId) ??
-			false
-		);
+		return savedArticleIds.includes(articleId);
 	};
 
 	async function LoadNews() {
@@ -56,19 +58,25 @@ const News: React.FC<{
 					.from("articles")
 					.select("*")
 					.like("category", `%${categoryFilter}%`)
+					.order("date", { ascending: false })
 			: await supabaseClient
 					.from("articles")
 					.select("*")
-					.range(0, PAGE_SIZE - 1)
-					.order("date", { ascending: false });
+					.order("date", { ascending: false })
+					.range(0, PAGE_SIZE - 1);
 
-		if (!data) return null;
+		const fallbackArticles = categoryFilter
+			? fallbackNews.filter((article) =>
+					article.category.includes(categoryFilter)
+				)
+			: fallbackNews;
+		const articles = data?.length ? data : fallbackArticles;
 
 		return (
 			<div>
-				{data.map((article, index) => (
+				{articles.map((article) => (
 					<NewsCard
-						key={index}
+						key={article.id}
 						id={article.id}
 						category={article.category}
 						rewritten_title={article.rewritten_title}
@@ -89,20 +97,27 @@ const News: React.FC<{
 		<>
 			<div className="grid grid-cols-1 md:grid-cols-12 md:gap-4 ">
 				<div className="md:col-span-8">
-					{newsNode} {!categoryFilter && <LoadMore pageSize={PAGE_SIZE} />}
+					{newsNode}
+					{!categoryFilter && (
+						<LoadMore
+							pageSize={PAGE_SIZE}
+							userId={user?.sub}
+							savedArticleIds={savedArticleIds}
+						/>
+					)}
 				</div>
 				<div className="md:col-span-4">
 					{user ? (
 						<div>
 							<div className="flex gap-3 items-center">
 								<AvatarComponent
-									image={user.imageUrl}
-									fallback={user.email.charAt(0).toUpperCase()}
+									image={user.avatar_url ?? user.picture}
+									fallback={(user.email ?? "?").charAt(0).toUpperCase()}
 								/>
 								<p>{user.email}</p>
 								<SignOut />
 							</div>
-							<ArticlesTable data={cleanedSavedArticles as any} />
+							<ArticlesTable data={cleanedSavedArticles} />
 						</div>
 					) : login ? (
 						<LoginForm />

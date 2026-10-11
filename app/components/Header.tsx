@@ -13,11 +13,13 @@ export const Header: React.FC = async () => {
 		.order("category", { ascending: true })
 		.limit(10);
 
-	const uniqueData = [...new Set(data)];
+	const uniqueCategories = [
+		...new Set((data ?? []).map(({ category }) => category as string)),
+	];
 
-	const categories = uniqueData?.map(({ category }, index) => {
+	const categories = uniqueCategories.map((category) => {
 		return (
-			<Link key={index} href={`/category/${category}`}>
+			<Link key={category} href={`/category/${encodeURIComponent(category)}`}>
 				<Button variant={"link"}>{category}</Button>
 			</Link>
 		);
@@ -30,7 +32,7 @@ export const Header: React.FC = async () => {
 				<Weather />
 				<ModeToggle />
 			</Bar>
-			<div className="flex justify-center aling-center">
+			<div className="flex justify-center items-center">
 				<Link
 					className="my-4 text-4xl font-bold tracking-tight text-heading md:text-5xl lg:text-6xl hover:cursor-pointer"
 					href={"/"}

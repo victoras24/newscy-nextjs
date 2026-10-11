@@ -17,9 +17,9 @@ export async function POST(request: NextRequest) {
 
 		return NextResponse.json({ success: true, data: facebookResponse });
 	} catch (error) {
-		console.error("Tweet error:", error);
+		console.error("Facebook post error:", error);
 		return NextResponse.json(
-			{ error: "Failed to post tweet" },
+			{ error: "Failed to post to Facebook" },
 			{ status: 500 }
 		);
 	}
